@@ -1,0 +1,28 @@
+{
+  "name": "ampersand-select-view",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "browserify test/* | tape-run | tap-spec",
+    "start": "run-browser test/*",
+    "demo": "beefy demo.js --cwd demo --open --live"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ampersand-form-view": "^0.2.2",
+    "ampersand-state": "^4.2.3",
+    "ampersand-view-conventions": "^1.1.1",
+    "function-bind": "^0.1.0",
+    "tap-spec": "^0.2.0",
+    "tape": "^2.13.3",
+    "tape-run": "^0.1.1",
+    "tape-suite": "^0.2.0"
+  },
+  "dependencies": {
+    "ampersand-collection": "^1.3.1",
+    "ampersand-dom": "^1.1.0",
+    "domify": "^1.2.2"
+  }
+}

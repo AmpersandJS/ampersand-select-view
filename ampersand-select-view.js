@@ -94,7 +94,7 @@ SelectView.prototype.render = function () {
     this.rendered = true;
 };
 
-SelectView.prototype.onChange = function (e) {
+SelectView.prototype.onChange = function () {
     var value = this.select.options[this.select.selectedIndex].value;
 
     if (this.options.isCollection && this.yieldModel) {

@@ -26,13 +26,6 @@ var fieldOptions = {
 viewConventions.view(suite.tape, SelectView, fieldOptions);
 viewConventions.formField(suite.tape, SelectView, fieldOptions, 'foo');
 
-
-
-var fieldOptions = {
-    name: 'word',
-    options: ['foo', 'bar', 'baz']
-};
-
 //Wrap sync tests
 var sync = function (cb) {
     return function (t) {

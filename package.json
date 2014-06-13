@@ -1,28 +1,63 @@
 {
   "name": "ampersand-select-view",
+  "description": "A view module for intelligently rendering and validating selectbox input. Works well with ampersand-form-view.",
   "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "browserify test/* | tape-run | tap-spec",
-    "start": "run-browser test/*",
-    "demo": "beefy demo.js --cwd demo --open --live"
+  "author": "Philip Roberts <phil@andyet.net>",
+  "bugs": {
+    "url": "https://github.com/AmpersandJS/ampersand-select-view/issues"
   },
-  "author": "",
-  "license": "ISC",
+  "dependencies": {
+    "ampersand-dom": "^1.1.0",
+    "domify": "^1.2.2"
+  },
   "devDependencies": {
+    "ampersand-collection": "^1.3.1",
     "ampersand-form-view": "^0.2.2",
     "ampersand-state": "^4.2.3",
     "ampersand-view-conventions": "^1.1.1",
     "function-bind": "^0.1.0",
+    "jshint": "^2.5.1",
+    "precommit-hook": "^1.0.2",
     "tap-spec": "^0.2.0",
     "tape": "^2.13.3",
     "tape-run": "^0.1.1",
     "tape-suite": "^0.2.0"
   },
-  "dependencies": {
-    "ampersand-collection": "^1.3.1",
-    "ampersand-dom": "^1.1.0",
-    "domify": "^1.2.2"
+  "directories": {
+    "test": "test"
+  },
+  "homepage": "https://github.com/AmpersandJS/ampersand-select-view",
+  "keywords": [
+    "ampersand",
+    "form",
+    "view",
+    "select"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AmpersandJS/ampersand-select-view.git"
+  },
+  "scripts": {
+    "test": "browserify test/* | tape-run | tap-spec",
+    "start": "run-browser test/*",
+    "demo": "beefy demo.js --cwd demo --open --live"
+  },
+  "testling": {
+    "files": "test/*.js",
+    "browsers": [
+      "ie/8..latest",
+      "firefox/17..latest",
+      "firefox/nightly",
+      "chrome/22..latest",
+      "chrome/canary",
+      "opera/12..latest",
+      "opera/next",
+      "safari/5.1..latest",
+      "ipad/6.0..latest",
+      "iphone/6.0..latest",
+      "android-browser/4.2..latest"
+    ]
   }
 }

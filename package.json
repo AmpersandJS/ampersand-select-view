@@ -34,7 +34,7 @@
     "select"
   ],
   "license": "MIT",
-  "main": "index.js",
+  "main": "ampersand-select-view.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/AmpersandJS/ampersand-select-view.git"

@@ -150,7 +150,7 @@ SelectView.prototype.updateSelectedOption = function () {
     }
 
     if (lookupValue) {
-        for (var i in this.select.options) {
+        for (var i = this.select.options.length; i--; i) {
             if (this.select.options[i].value === lookupValue.toString()) {
                 this.select.selectedIndex = i;
                 return;

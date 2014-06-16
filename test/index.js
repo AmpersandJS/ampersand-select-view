@@ -200,22 +200,27 @@ suite('With ampersand collection', function (s) {
         var select = view.el.querySelector('select');
 
         t.equal(view.value, coll.at(1));
+        t.ok(view.valid);
         t.equal(select.options[select.selectedIndex].innerHTML, 'Option two');
 
         view.setValue(undefined);
         t.equal(view.value, undefined);
+        t.notOk(view.valid);
         t.equal(select.options[select.selectedIndex].innerHTML, 'Please choose:');
 
         view.setValue('1');
         t.equal(view.value, coll.at(0));
+        t.ok(view.valid);
         t.equal(select.options[select.selectedIndex].innerHTML, 'Option one');
 
         view.setValue('totes-wrong');
         t.equal(view.value, undefined);
+        t.notOk(view.valid);
         t.equal(select.options[select.selectedIndex].innerHTML, 'Please choose:');
 
         view.setValue(coll.at(1));
         t.equal(view.value, coll.at(1));
+        t.ok(view.valid);
         t.equal(select.options[select.selectedIndex].innerHTML, 'Option two');
     }));
 
@@ -233,22 +238,27 @@ suite('With ampersand collection', function (s) {
         var select = view.el.querySelector('select');
 
         t.equal(view.value, 2);
+        t.ok(view.valid);
         t.equal(select.options[select.selectedIndex].innerHTML, 'Option two');
 
         view.setValue(undefined);
         t.equal(view.value, void 0);
+        t.notOk(view.valid);
         t.equal(select.options[select.selectedIndex].innerHTML, 'Please choose:');
 
         view.setValue('1');
         t.equal(view.value, 1);
+        t.ok(view.valid);
         t.equal(select.options[select.selectedIndex].innerHTML, 'Option one');
 
         view.setValue('totes-wrong');
         t.equal(view.value, void 0);
+        t.notOk(view.valid);
         t.equal(select.options[select.selectedIndex].innerHTML, 'Please choose:');
 
         view.setValue(coll.at(1));
         t.equal(view.value, 2);
+        t.ok(view.valid);
         t.equal(select.options[select.selectedIndex].innerHTML, 'Option two');
     }));
 });

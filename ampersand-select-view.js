@@ -202,7 +202,11 @@ SelectView.prototype.validate = function () {
 
         //If it's a collection, ensure it's in the collection
         if (this.options.isCollection) {
-            return this.options.indexOf(this.value) > -1;
+            if (this.yieldModel) {
+                return this.options.indexOf(this.value) > -1;
+            } else {
+                return !!this.findModelForId(this.value);
+            }
         }
 
         //[ ['foo', 'Foo Text'], ['bar', 'Bar Text'] ]

@@ -62,7 +62,8 @@ var BaseView = FormView.extend({
                 options: collection1,
                 value: collection1.at(2),
                 idAttribute: 'id',
-                textAttribute: 'title'
+                textAttribute: 'title',
+                unselectedText: 'please choose one'
             }),
 
             new SelectView({

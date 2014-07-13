@@ -218,7 +218,7 @@ SelectView.prototype.validate = function () {
         return element === this.value;
     }.bind(this));
 
-    if (!this.valid) {
+    if (!this.valid && this.required) {
         this.setMessage(this.requiredMessage);
     } else {
         this.setMessage();

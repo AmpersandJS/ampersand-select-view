@@ -1,2 +1,8 @@
 node_modules
 bundle.js
+
+.idea/.name
+
+*.iml
+
+*.xml

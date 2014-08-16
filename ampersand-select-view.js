@@ -290,9 +290,10 @@ SelectView.prototype.getOptionText = function (option) {
 
 function createOption (value, text) {
     var node = document.createElement('option');
+    if (value === undefined) { value = ''; }
 
     node.textContent = text;
-    node.value = value || '';
+    node.value = value;
 
     return node;
 }

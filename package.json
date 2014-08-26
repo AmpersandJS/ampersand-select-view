@@ -41,7 +41,7 @@
     "url": "https://github.com/AmpersandJS/ampersand-select-view.git"
   },
   "scripts": {
-    "test": "browserify test/* | tape-run | tap-spec",
+    "test": "browserify test/* | tape-run -b phantom | tap-spec",
     "start": "run-browser test/*",
     "demo": "beefy demo.js --cwd demo --open --live"
   },

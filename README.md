@@ -1,6 +1,6 @@
 # ampersand-select-view
 
-![](https://travis-ci.org/AmpersandJS/ampersand-select-view.svg)
+![](https://travis-ci.org/AmpersandJS/ampersand-select-view.svg) ![](https://badge.fury.io/js/ampersand-select-view.svg)
 
 A view module for intelligently rendering and validating selectbox input. Works well with ampersand-form-view.
 

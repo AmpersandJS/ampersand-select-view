@@ -290,7 +290,9 @@ SelectView.prototype.getOptionText = function (option) {
 
 function createOption (value, text) {
     var node = document.createElement('option');
-    if (value === undefined) { value = ''; }
+
+    //Set to empty-string if undefined or null, but not if 0, false, etc
+    if (value === null || value === undefined) { value = ''; }
 
     node.textContent = text;
     node.value = value;

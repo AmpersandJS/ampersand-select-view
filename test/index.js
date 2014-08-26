@@ -86,14 +86,18 @@ suite('Options array with key/value', function (s) {
     }));
 
     s.test('renders the empty item', sync(function (t) {
-        view = new SelectView({ name: 'word', options: arr, unselectedText: 'Please choose:' });
+        view = new SelectView({
+            name: 'word',
+            options: arr,
+            unselectedText: 'Please choose:'
+        });
 
         var optionNodes = view.el.querySelectorAll('select option');
 
         t.equal(optionNodes.length, 4);
 
-        t.equal(optionNodes[0].value, '');
-        t.equal(optionNodes[0].innerHTML, 'Please choose:');
+        t.equal(optionNodes[0].value, '', 'First option value should be empty string.');
+        t.equal(optionNodes[0].innerHTML, 'Please choose:', 'First option should have unselectedText');
 
         t.equal(optionNodes[1].value, 'one');
         t.equal(optionNodes[1].textContent, 'one');

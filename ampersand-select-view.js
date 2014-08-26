@@ -1,13 +1,13 @@
 var domify = require('domify');
 var dom = require('ampersand-dom');
 
-//Replaceable with anything with label, message-container, message-text roles and a <select>
+//Replaceable with anything with label, message-container, message-text data-hooks and a <select>
 var defaultTemplate = [
     '<label class="select">',
-        '<span role="label"></span>',
+        '<span data-hook="label"></span>',
         '<select></select>',
-        '<span role="message-container" class="message message-below message-error">',
-            '<p role="message-text"></p>',
+        '<span data-hook="message-container" class="message message-below message-error">',
+            '<p data-hook="message-text"></p>',
         '</span>',
     '</label>'
 ].join('\n');
@@ -73,7 +73,7 @@ SelectView.prototype.render = function () {
 
     if (!this.el) this.el = domify(this.template);
 
-    var label = this.el.querySelector('[role=label]');
+    var label = this.el.querySelector('[data-hook~=label]');
     if (label) {
         label.textContent = this.label;
     }
@@ -240,8 +240,8 @@ SelectView.prototype.getOptionValue = function (option) {
 };
 
 SelectView.prototype.setMessage = function (message) {
-    var mContainer = this.el.querySelector('[role=message-container]');
-    var mText = this.el.querySelector('[role=message-text]');
+    var mContainer = this.el.querySelector('[data-hook~=message-container]');
+    var mText = this.el.querySelector('[data-hook~=message-text]');
 
     if (!mContainer || !mText) return;
 
@@ -256,24 +256,6 @@ SelectView.prototype.setMessage = function (message) {
         dom.addClass(this.el, this.validClass);
         dom.removeClass(this.el, this.invalidClass);
     }
-
-    //var text = container.
-    //this.el.querySelector('[role=message-text]').textContent(message);
-    //var select = this.select;
-    //this.message = message;
-    //// there is an error
-    //if (message && this.shouldValidate) {
-    //    this.messageContainer.style.display = 'block';
-    //    this.messageEl.textContent = message;
-    //    dom.addClass(input, this.invalidClass);
-    //    dom.removeClass(input, this.validClass);
-    //} else {
-    //    this.messageContainer.style.display = 'none';
-    //    if (this.shouldValidate && this.editedDirectly) {
-    //        dom.addClass(input, this.validClass);
-    //        dom.removeClass(input, this.invalidClass);
-    //    }
-    //}
 };
 
 SelectView.prototype.getOptionText = function (option) {

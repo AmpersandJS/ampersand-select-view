@@ -53,13 +53,13 @@ suite('Setup', function (s) {
     }));
 
     s.test('renders label text', sync(function (t) {
-        var labelText = view.el.querySelector('[role=label]').textContent;
+        var labelText = view.el.querySelector('[data-hook~=label]').textContent;
         t.equal(labelText, 'Choose a word');
     }));
 
     s.test('label text falls back to name', sync(function (t) {
         view = new SelectView({ name: 'word', options: [] });
-        var labelText = view.el.querySelector('[role=label]').textContent;
+        var labelText = view.el.querySelector('[data-hook~=label]').textContent;
         t.equal(labelText, 'word');
     }));
 });

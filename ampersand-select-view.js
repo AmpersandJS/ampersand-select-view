@@ -1,5 +1,6 @@
 var domify = require('domify');
 var dom = require('ampersand-dom');
+var matches = require('matches-selector');
 
 //Replaceable with anything with label, message-container, message-text data-hooks and a <select>
 var defaultTemplate = [
@@ -79,6 +80,7 @@ SelectView.prototype.render = function () {
     }
 
     this.select = this.el.querySelector('select');
+    if (matches(this.el, 'select')) this.select = this.el;
 
     this.bindDOMEvents();
     this.renderOptions();

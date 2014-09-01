@@ -22,7 +22,8 @@
     "tap-spec": "^0.2.0",
     "tape": "^2.13.3",
     "tape-run": "^0.1.1",
-    "tape-suite": "^0.2.0"
+    "tape-suite": "^0.2.0",
+    "matches-selector": "^1.0.0"
   },
   "directories": {
     "test": "test"

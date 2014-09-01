@@ -62,6 +62,15 @@ suite('Setup', function (s) {
         var labelText = view.el.querySelector('[data-hook~=label]').textContent;
         t.equal(labelText, 'word');
     }));
+
+    s.test('works with just <select></select>', sync(function (t) {
+        view = new SelectView({
+            name: 'word',
+            template: '<select></select>',
+            options: ['foo', 'bar', 'baz']
+        });
+        t.equal(view.el.tagName, 'SELECT');
+    }));
 });
 
 suite('Options array with key/value', function (s) {

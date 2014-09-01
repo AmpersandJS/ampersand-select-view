@@ -74,6 +74,13 @@ var BaseView = FormView.extend({
                 idAttribute: 'id',
                 textAttribute: 'title',
                 yieldModel: false
+            }),
+
+            new SelectView({
+                name: 'select-only',
+                parent: this,
+                options: ['a', 'b', 'c'],
+                template: '<select></select>'
             })
         ];
     }

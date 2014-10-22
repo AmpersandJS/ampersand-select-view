@@ -30,6 +30,7 @@ var defaultTemplate = [
  *  Additional opts, if options is a collection:
  *  - [idAttribute]: model attribute to use as the id for the option node
  *  - [textAttribute]: model attribute to use as the text of the option node in the select box
+ *  - [disabledAttribute]: model attribute to disable the option node
  *  - [yieldModel]: (defaults true) if options is a collection, yields the full model rather than just it's id to .value
  */
 
@@ -47,6 +48,7 @@ function SelectView (opts) {
     if (this.options.isCollection) {
         this.idAttribute = opts.idAttribute || this.options.mainIndex || 'id';
         this.textAttribute = opts.textAttribute || 'text';
+        this.disabledAttribute = opts.disabledAttribute || 'disabled';
     }
 
     this.el = opts.el;
@@ -131,7 +133,7 @@ SelectView.prototype.renderOptions = function () {
 
     this.options.forEach(function (option) {
         this.select.appendChild(
-            createOption(this.getOptionValue(option), this.getOptionText(option))
+            createOption(this.getOptionValue(option), this.getOptionText(option), this.getOptionDisabled(option))
         );
     }.bind(this));
 };
@@ -241,6 +243,20 @@ SelectView.prototype.getOptionValue = function (option) {
     return option;
 };
 
+SelectView.prototype.getOptionDisabled = function (option) {
+    if (Array.isArray(option)) return;
+
+    if (this.options.isCollection) {
+        if (this.disabledAttribute && option[this.disabledAttribute]) {
+            return option[this.disabledAttribute];
+        } else {
+            return false;
+        }
+    }
+
+    return option;
+};
+
 SelectView.prototype.setMessage = function (message) {
     var mContainer = this.el.querySelector('[data-hook~=message-container]');
     var mText = this.el.querySelector('[data-hook~=message-text]');
@@ -272,11 +288,17 @@ SelectView.prototype.getOptionText = function (option) {
     return option;
 };
 
-function createOption (value, text) {
+function createOption (value, text, disabled) {
     var node = document.createElement('option');
 
     //Set to empty-string if undefined or null, but not if 0, false, etc
     if (value === null || value === undefined) { value = ''; }
+
+    //console.log(disabled);
+
+    if(disabled) {
+        node.disabled = true;
+    }
 
     node.textContent = text;
     node.value = value;

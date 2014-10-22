@@ -82,6 +82,7 @@ SelectView.prototype.render = function () {
     }
 
     this.select = this.el.querySelector('select');
+    this.select.name = this.name;
     if (matches(this.el, 'select')) this.select = this.el;
 
     this.bindDOMEvents();
@@ -202,25 +203,29 @@ SelectView.prototype.setValue = function (value) {
 };
 
 SelectView.prototype.validate = function () {
-    this.valid = this.options.some(function (element) {
+    if(!this.value && !this.required) {
+        this.valid = true;
+    } else {
+        this.valid = this.options.some(function (element) {
 
-        //If it's a collection, ensure it's in the collection
-        if (this.options.isCollection) {
-            if (this.yieldModel) {
-                return this.options.indexOf(this.value) > -1;
-            } else {
-                return !!this.findModelForId(this.value);
+            //If it's a collection, ensure it's in the collection
+            if (this.options.isCollection) {
+                if (this.yieldModel) {
+                    return this.options.indexOf(this.value) > -1;
+                } else {
+                    return !!this.findModelForId(this.value);
+                }
             }
-        }
 
-        //[ ['foo', 'Foo Text'], ['bar', 'Bar Text'] ]
-        if (Array.isArray(element) && element.length === 2) {
-            return element[0] === this.value;
-        }
+            //[ ['foo', 'Foo Text'], ['bar', 'Bar Text'] ]
+            if (Array.isArray(element) && element.length === 2) {
+                return element[0] === this.value;
+            }
 
-        //[ 'foo', 'bar', 'baz' ]
-        return element === this.value;
-    }.bind(this));
+            //[ 'foo', 'bar', 'baz' ]
+            return element === this.value;
+        }.bind(this));
+    }
 
     if (!this.valid && this.required) {
         this.setMessage(this.requiredMessage);
@@ -293,8 +298,6 @@ function createOption (value, text, disabled) {
 
     //Set to empty-string if undefined or null, but not if 0, false, etc
     if (value === null || value === undefined) { value = ''; }
-
-    //console.log(disabled);
 
     if(disabled) {
         node.disabled = true;

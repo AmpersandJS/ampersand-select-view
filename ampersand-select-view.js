@@ -30,7 +30,7 @@ var defaultTemplate = [
  *  Additional opts, if options is a collection:
  *  - [idAttribute]: model attribute to use as the id for the option node
  *  - [textAttribute]: model attribute to use as the text of the option node in the select box
- *  - [disabledAttribute]: model attribute to disable the option node
+ *  - [disabledAttribute]: boolean model attribute to flag disabling of the option node
  *  - [yieldModel]: (defaults true) if options is a collection, yields the full model rather than just it's id to .value
  */
 
@@ -82,8 +82,11 @@ SelectView.prototype.render = function () {
     }
 
     this.select = this.el.querySelector('select');
-    this.select.name = this.name;
     if (matches(this.el, 'select')) this.select = this.el;
+    
+    if(!this.select.name) {
+      this.select.name = this.name;
+    }
 
     this.bindDOMEvents();
     this.renderOptions();

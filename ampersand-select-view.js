@@ -84,7 +84,7 @@ SelectView.prototype.render = function () {
     this.select = this.el.querySelector('select');
     if (matches(this.el, 'select')) this.select = this.el;
     
-    if(!this.select.name) {
+    if(this.name && !this.select.name) {
       this.select.name = this.name;
     }
 

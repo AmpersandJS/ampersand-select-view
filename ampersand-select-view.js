@@ -175,12 +175,11 @@ SelectView.prototype.remove = function () {
     this.el.removeEventListener('change', this.onChange, false);
 };
 
-SelectView.prototype.clear = function() {
-    this.shouldValidate = false;
-    this.setValue(null);
+SelectView.prototype.clear = function(skipValidation) {
+    this.setValue('', skipValidation);
 };
 
-SelectView.prototype.setValue = function (value) {
+SelectView.prototype.setValue = function (value, skipValidation) {
     if (value === this.value) return;
 
     //Coerce and find the right value based on yieldModel
@@ -205,7 +204,11 @@ SelectView.prototype.setValue = function (value) {
     }
 
     this.value = value;
-    this.validate();
+
+    if(!skipValidation) {
+        this.validate();
+    }
+    
     this.updateSelectedOption();
     if (this.parent) this.parent.update(this);
 };

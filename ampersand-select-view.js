@@ -172,6 +172,11 @@ SelectView.prototype.remove = function () {
     this.el.removeEventListener('change', this.onChange, false);
 };
 
+SelectView.prototype.clear = function() {
+    this.shouldValidate = false;
+    this.setValue(null);
+};
+
 SelectView.prototype.setValue = function (value) {
     if (value === this.value) return;
 

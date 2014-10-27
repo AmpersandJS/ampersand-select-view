@@ -1,7 +1,7 @@
 {
   "name": "ampersand-select-view",
   "description": "A view module for intelligently rendering and validating selectbox input. Works well with ampersand-form-view.",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "author": "Philip Roberts <phil@andyet.net>",
   "bugs": {
     "url": "https://github.com/AmpersandJS/ampersand-select-view/issues"
@@ -66,6 +66,8 @@
     ]
   },
   "browserify": {
-    "transform": ["ampersand-version"]
+    "transform": [
+      "ampersand-version"
+    ]
   }
 }

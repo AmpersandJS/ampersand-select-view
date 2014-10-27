@@ -87,7 +87,7 @@ SelectView.prototype.render = function () {
     this.updateSelectedOption();
 
     if (this.options.isCollection) {
-        this.options.on('add', function () {
+        this.options.on('add remove reset', function () {
             this.renderOptions();
             this.updateSelectedOption();
         }.bind(this));

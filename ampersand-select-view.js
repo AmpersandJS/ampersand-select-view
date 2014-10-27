@@ -1,3 +1,4 @@
+/* $AMPERSAND_VERSION */
 var domify = require('domify');
 var dom = require('ampersand-dom');
 var matches = require('matches-selector');

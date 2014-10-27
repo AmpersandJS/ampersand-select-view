@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "ampersand-dom": "^1.1.0",
+    "ampersand-version": "^1.0.1",
     "domify": "^1.2.2",
     "matches-selector": "^1.0.0"
   },
@@ -63,5 +64,8 @@
       "iphone/6.0..latest",
       "android-browser/4.2..latest"
     ]
+  },
+  "browserify": {
+    "transform": ["ampersand-version"]
   }
 }

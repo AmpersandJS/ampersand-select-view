@@ -71,6 +71,12 @@ suite('Setup', function (s) {
         });
         t.equal(view.el.tagName, 'SELECT');
     }));
+
+    s.test('set valid name on select input', sync(function (t) {
+        view = new SelectView({ name: 'word', options: [] });
+        var selectName = view.el.querySelector('select').getAttribute('name');
+        t.equal(selectName, 'word');
+    }));
 });
 
 suite('Options array with key/value', function (s) {

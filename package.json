@@ -26,7 +26,8 @@
     "tap-spec": "^0.2.0",
     "tape": "^2.13.3",
     "tape-run": "^0.1.1",
-    "tape-suite": "^0.2.0"
+    "tape-suite": "^0.2.0",
+    "zuul": "^1.13.1"
   },
   "directories": {
     "test": "test"
@@ -45,7 +46,7 @@
     "url": "https://github.com/AmpersandJS/ampersand-select-view.git"
   },
   "scripts": {
-    "test": "browserify test/* | tape-run -b phantom | tap-spec",
+    "test": "zuul -- test/index.js",
     "start": "run-browser test/*",
     "demo": "beefy demo/demo.js:demo.js --cwd demo"
   },

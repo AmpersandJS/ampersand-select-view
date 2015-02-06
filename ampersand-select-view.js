@@ -1,3 +1,4 @@
+/* $AMPERSAND_VERSION */
 var domify = require('domify');
 var dom = require('ampersand-dom');
 var matches = require('matches-selector');
@@ -83,17 +84,15 @@ SelectView.prototype.render = function () {
 
     this.select = this.el.querySelector('select');
     if (matches(this.el, 'select')) this.select = this.el;
-    
-    if(this.name && !this.select.name) {
-      this.select.name = this.name;
-    }
+
+    if (this.select) this.select.setAttribute('name', this.name);
 
     this.bindDOMEvents();
     this.renderOptions();
     this.updateSelectedOption();
 
     if (this.options.isCollection) {
-        this.options.on('add', function () {
+        this.options.on('add remove reset', function () {
             this.renderOptions();
             this.updateSelectedOption();
         }.bind(this));

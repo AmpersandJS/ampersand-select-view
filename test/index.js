@@ -71,6 +71,12 @@ suite('Setup', function (s) {
         });
         t.equal(view.el.tagName, 'SELECT');
     }));
+
+    s.test('set valid name on select input', sync(function (t) {
+        view = new SelectView({ name: 'word', options: [] });
+        var selectName = view.el.querySelector('select').getAttribute('name');
+        t.equal(selectName, 'word');
+    }));
 });
 
 suite('Options array with key/value', function (s) {
@@ -161,6 +167,50 @@ suite('With ampersand collection', function (s) {
 
         t.equal(optionNodes[2].value, '3');
         t.equal(optionNodes[2].textContent, 'Option three');
+    }));
+
+    s.test('rerenders if the collection changes', sync(function (t) {
+        var coll = new Collection([
+            { id: 1, someOtherKey: 'foo', title: 'Option one' },
+            { id: 2, someOtherKey: 'bar', title: 'Option two' },
+            { id: 3, someOtherKey: 'baz', title: 'Option three' },
+        ]);
+
+        view = new SelectView({
+            name: 'word',
+            options: coll,
+            idAttribute: 'id',
+            textAttribute: 'title'
+        });
+
+        var optionNodes = view.el.querySelectorAll('select option');
+        t.equal(optionNodes.length, 3);
+
+        coll.add({ id: 4, someOtherKey: 'four', title: 'Option four' });
+
+        optionNodes = view.el.querySelectorAll('select option');
+        t.equal(optionNodes.length, 4);
+        t.equal(optionNodes[3].value, '4');
+        t.equal(optionNodes[3].textContent, 'Option four');
+
+        coll.remove({ id: 1 });
+
+        optionNodes = view.el.querySelectorAll('select option');
+        t.equal(optionNodes.length, 3);
+        t.equal(optionNodes[0].value, '2');
+        t.equal(optionNodes[0].textContent, 'Option two');
+
+        coll.reset([
+            { id: 10, someOtherKey: 'bar', title: 'Option ten' },
+            { id: 20, someOtherKey: 'foo', title: 'Option twenty' },
+        ]);
+
+        optionNodes = view.el.querySelectorAll('select option');
+        t.equal(optionNodes.length, 2);
+        t.equal(optionNodes[0].value, '10');
+        t.equal(optionNodes[0].textContent, 'Option ten');
+        t.equal(optionNodes[1].value, '20');
+        t.equal(optionNodes[1].textContent, 'Option twenty');
     }));
 
     s.test('renders the options into the select with different id attribute', sync(function (t) {

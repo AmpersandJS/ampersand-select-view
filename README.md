@@ -54,6 +54,8 @@ module.exports = FormView.extend({
                 idAttribute: 'id',
                 // you can also specify which model attribute to use as the title
                 textAttribute: 'title',
+                // you can also specify a boolean model attribute to render items as disabled
+                disabledAttribute: 'disabled',
                 // here you can specify if it should return the selected model from the
                 // collection, or just the id attribute
                 yieldModel: false

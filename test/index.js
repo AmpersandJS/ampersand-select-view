@@ -8,7 +8,8 @@ var Model = AmpersandState.extend({
     props: {
         id: 'number',
         someOtherKey: 'string',
-        title: 'string'
+        title: 'string',
+        disabled: 'boolean'
     }
 });
 
@@ -79,6 +80,8 @@ suite('Setup', function (s) {
     }));
 });
 
+
+
 suite('Options array with key/value', function (s) {
     var arr = ['one', 'two', 'three'];
     var view;
@@ -143,7 +146,7 @@ suite('With ampersand collection', function (s) {
     var coll = new Collection([
         { id: 1, someOtherKey: 'foo', title: 'Option one' },
         { id: 2, someOtherKey: 'bar', title: 'Option two' },
-        { id: 3, someOtherKey: 'baz', title: 'Option three' },
+        { id: 3, someOtherKey: 'baz', title: 'Option three' }
     ]);
     var view;
 
@@ -257,6 +260,7 @@ suite('With ampersand collection', function (s) {
             unselectedText: 'Please choose:',
             idAttribute: 'id',
             textAttribute: 'title',
+            required: true,
             value: 2
         });
 
@@ -295,6 +299,7 @@ suite('With ampersand collection', function (s) {
             idAttribute: 'id',
             textAttribute: 'title',
             yieldModel: false,
+            required: true,
             value: 2
         });
 
@@ -323,5 +328,30 @@ suite('With ampersand collection', function (s) {
         t.equal(view.value, 2);
         t.ok(view.valid);
         t.equal(select.options[select.selectedIndex].innerHTML, 'Option two');
+    }));
+
+    s.test('renders a disabled item for a model that has the attribute specified in the disabledAttribute option set to truthy', sync(function (t) {
+        var coll = new Collection([
+            { id: 1, someOtherKey: 'foo', title: 'Option one' },
+            { id: 2, someOtherKey: 'bar', title: 'Option two', disabled: null },
+            { id: 3, someOtherKey: 'baz', title: 'Option three', disabled: false },
+            { id: 4, someOtherKey: 'baz', title: 'Option four', disabled: true  }
+        ]);
+
+        view = new SelectView({
+            name: 'word',
+            options: coll,
+            idAttribute: 'id',
+            textAttribute: 'title',
+            unselectedText: 'Please choose:',
+            disabledAttribute: 'disabled'
+        });
+
+        var optionNodes = view.el.querySelectorAll('select option');
+
+        t.equal(optionNodes[1].disabled, false);
+        t.equal(optionNodes[2].disabled, false);
+        t.equal(optionNodes[3].disabled, false);
+        t.equal(optionNodes[4].disabled, true);
     }));
 });

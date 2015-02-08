@@ -49,7 +49,7 @@ function SelectView (opts) {
     if (this.options.isCollection) {
         this.idAttribute = opts.idAttribute || this.options.mainIndex || 'id';
         this.textAttribute = opts.textAttribute || 'text';
-        this.disabledAttribute = opts.disabledAttribute || 'disabled';
+        this.disabledAttribute = opts.disabledAttribute;
     }
 
     this.el = opts.el;

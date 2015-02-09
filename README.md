@@ -39,8 +39,9 @@ module.exports = FormView.extend({
             new SelectView({
                 name: 'option',
                 parent: this,
-                // you can also pass pairs, first is the value, second is used for the label
-                options: [ ['a', 'Option A'], ['b', 'Option B'], ['c', 'Option C'] ]
+                // you can also pass array, first is the value, second is used for the label
+                // and an optional third value can used to disable the option
+                options: [ ['a', 'Option A'], ['b', 'Option B'], ['c', 'Option C', true] ]
             }),
             new SelectView({
                 name: 'model',

@@ -202,11 +202,7 @@ SelectView.prototype.setValue = function (value, skipValidation) {
     }
 
     this.value = value;
-
-    if(!skipValidation) {
-        this.validate();
-    }
-    
+    if(!skipValidation) this.validate();
     this.updateSelectedOption();
     if (this.parent) this.parent.update(this);
 };
@@ -216,7 +212,6 @@ SelectView.prototype.validate = function () {
         this.valid = true;
     } else {
         this.valid = this.options.some(function (element) {
-
             //If it's a collection, ensure it's in the collection
             if (this.options.isCollection) {
                 if (this.yieldModel) {
@@ -257,16 +252,22 @@ SelectView.prototype.getOptionValue = function (option) {
     return option;
 };
 
-SelectView.prototype.getOptionDisabled = function (option) {
-    if (Array.isArray(option)) return;
+SelectView.prototype.getOptionText = function (option) {
+    if (Array.isArray(option)) return option[1];
 
     if (this.options.isCollection) {
-        if (this.disabledAttribute && option[this.disabledAttribute]) {
-            return option[this.disabledAttribute];
-        } else {
-            return false;
+        if (this.textAttribute && option[this.textAttribute]) {
+            return option[this.textAttribute];
         }
     }
+
+    return option;
+};
+
+SelectView.prototype.getOptionDisabled = function (option) {
+    if (Array.isArray(option)) return option[2];
+
+    if (this.options.isCollection && this.disabledAttribute) return option[this.disabledAttribute];
 
     return option;
 };
@@ -290,28 +291,13 @@ SelectView.prototype.setMessage = function (message) {
     }
 };
 
-SelectView.prototype.getOptionText = function (option) {
-    if (Array.isArray(option)) return option[1];
-
-    if (this.options.isCollection) {
-        if (this.textAttribute && option[this.textAttribute]) {
-            return option[this.textAttribute];
-        }
-    }
-
-    return option;
-};
-
 function createOption (value, text, disabled) {
     var node = document.createElement('option');
 
     //Set to empty-string if undefined or null, but not if 0, false, etc
     if (value === null || value === undefined) { value = ''; }
 
-    if(disabled) {
-        node.disabled = true;
-    }
-
+    if(disabled) node.disabled = true;
     node.textContent = text;
     node.value = value;
 

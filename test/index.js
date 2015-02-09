@@ -35,7 +35,6 @@ var sync = function (cb) {
     };
 };
 
-
 suite('Setup', function (s) {
     var view;
 
@@ -80,9 +79,7 @@ suite('Setup', function (s) {
     }));
 });
 
-
-
-suite('Options array with key/value', function (s) {
+suite('Options array with string items', function (s) {
     var arr = ['one', 'two', 'three'];
     var view;
 
@@ -140,7 +137,72 @@ suite('Options array with key/value', function (s) {
     }));
 });
 
+suite('Options array with array items', function (s) {
+    var arr =  [ ['one', 'Option One'], ['two', 'Option Two', false], ['three', 'Option Three', true] ];
+    var view;
 
+    s.test('renders the options into the select', sync(function (t) {
+        view = new SelectView({ name: 'word', options: arr });
+
+        var optionNodes = view.el.querySelectorAll('select option');
+
+        t.equal(optionNodes.length, 3);
+
+        t.equal(optionNodes[0].value, 'one');
+        t.equal(optionNodes[0].textContent, 'Option One');
+
+        t.equal(optionNodes[1].value, 'two');
+        t.equal(optionNodes[1].textContent, 'Option Two');
+
+        t.equal(optionNodes[2].value, 'three');
+        t.equal(optionNodes[2].textContent, 'Option Three');
+    }));
+
+    s.test('renders the empty item', sync(function (t) {
+        view = new SelectView({
+            name: 'word',
+            options: arr,
+            unselectedText: 'Please choose:'
+        });
+
+        var optionNodes = view.el.querySelectorAll('select option');
+
+        t.equal(optionNodes.length, 4);
+
+        t.equal(optionNodes[0].value, '', 'First option value should be empty string.');
+        t.equal(optionNodes[0].innerHTML, 'Please choose:', 'First option should have unselectedText');
+
+        t.equal(optionNodes[1].value, 'one');
+        t.equal(optionNodes[1].textContent, 'Option One');
+    }));
+
+    s.test('selects the right item', sync(function (t) {
+        view = new SelectView({ name: 'word', options: arr, unselectedText: 'Please choose:', value: 'two' });
+
+        var select = view.el.querySelector('select');
+
+        t.equal(select.options[select.selectedIndex].value, 'two');
+
+        view.setValue(undefined);
+        t.equal(select.options[select.selectedIndex].innerHTML, 'Please choose:');
+
+        view.setValue('one');
+        t.equal(select.options[select.selectedIndex].value, 'one');
+
+        view.setValue('totes-wrong');
+        t.equal(select.options[select.selectedIndex].innerHTML, 'Please choose:');
+    }));
+
+    s.test('renders a disabled item if a third value is passed which is truthy', sync(function (t) {
+        view = new SelectView({ name: 'word', options: arr });
+
+        var optionNodes = view.el.querySelectorAll('select option');
+
+        t.equal(optionNodes[0].disabled, false);
+        t.equal(optionNodes[1].disabled, false);
+        t.equal(optionNodes[2].disabled, true);
+    }));
+});
 
 suite('With ampersand collection', function (s) {
     var coll = new Collection([

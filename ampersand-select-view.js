@@ -31,6 +31,7 @@ var defaultTemplate = [
  *  Additional opts, if options is a collection:
  *  - [idAttribute]: model attribute to use as the id for the option node
  *  - [textAttribute]: model attribute to use as the text of the option node in the select box
+ *  - [disabledAttribute]: boolean model attribute to flag disabling of the option node
  *  - [yieldModel]: (defaults true) if options is a collection, yields the full model rather than just it's id to .value
  */
 
@@ -48,6 +49,7 @@ function SelectView (opts) {
     if (this.options.isCollection) {
         this.idAttribute = opts.idAttribute || this.options.mainIndex || 'id';
         this.textAttribute = opts.textAttribute || 'text';
+        this.disabledAttribute = opts.disabledAttribute;
     }
 
     this.el = opts.el;
@@ -133,7 +135,7 @@ SelectView.prototype.renderOptions = function () {
 
     this.options.forEach(function (option) {
         this.select.appendChild(
-            createOption(this.getOptionValue(option), this.getOptionText(option))
+            createOption(this.getOptionValue(option), this.getOptionText(option), this.getOptionDisabled(option))
         );
     }.bind(this));
 };
@@ -171,7 +173,11 @@ SelectView.prototype.remove = function () {
     this.el.removeEventListener('change', this.onChange, false);
 };
 
-SelectView.prototype.setValue = function (value) {
+SelectView.prototype.clear = function() {
+    this.setValue('', true);
+};
+
+SelectView.prototype.setValue = function (value, skipValidation) {
     if (value === this.value) return;
 
     //Coerce and find the right value based on yieldModel
@@ -196,31 +202,34 @@ SelectView.prototype.setValue = function (value) {
     }
 
     this.value = value;
-    this.validate();
+    if(!skipValidation) this.validate();
     this.updateSelectedOption();
     if (this.parent) this.parent.update(this);
 };
 
 SelectView.prototype.validate = function () {
-    this.valid = this.options.some(function (element) {
-
-        //If it's a collection, ensure it's in the collection
-        if (this.options.isCollection) {
-            if (this.yieldModel) {
-                return this.options.indexOf(this.value) > -1;
-            } else {
-                return !!this.findModelForId(this.value);
+    if(!this.value && !this.required) {
+        this.valid = true;
+    } else {
+        this.valid = this.options.some(function (element) {
+            //If it's a collection, ensure it's in the collection
+            if (this.options.isCollection) {
+                if (this.yieldModel) {
+                    return this.options.indexOf(this.value) > -1;
+                } else {
+                    return !!this.findModelForId(this.value);
+                }
             }
-        }
 
-        //[ ['foo', 'Foo Text'], ['bar', 'Bar Text'] ]
-        if (Array.isArray(element) && element.length === 2) {
-            return element[0] === this.value;
-        }
+            //[ ['foo', 'Foo Text'], ['bar', 'Bar Text'] ]
+            if (Array.isArray(element) && element.length === 2) {
+                return element[0] === this.value;
+            }
 
-        //[ 'foo', 'bar', 'baz' ]
-        return element === this.value;
-    }.bind(this));
+            //[ 'foo', 'bar', 'baz' ]
+            return element === this.value;
+        }.bind(this));
+    }
 
     if (!this.valid && this.required) {
         this.setMessage(this.requiredMessage);
@@ -239,6 +248,26 @@ SelectView.prototype.getOptionValue = function (option) {
             return option[this.idAttribute];
         }
     }
+
+    return option;
+};
+
+SelectView.prototype.getOptionText = function (option) {
+    if (Array.isArray(option)) return option[1];
+
+    if (this.options.isCollection) {
+        if (this.textAttribute && option[this.textAttribute]) {
+            return option[this.textAttribute];
+        }
+    }
+
+    return option;
+};
+
+SelectView.prototype.getOptionDisabled = function (option) {
+    if (Array.isArray(option)) return option[2];
+
+    if (this.options.isCollection && this.disabledAttribute) return option[this.disabledAttribute];
 
     return option;
 };
@@ -262,24 +291,13 @@ SelectView.prototype.setMessage = function (message) {
     }
 };
 
-SelectView.prototype.getOptionText = function (option) {
-    if (Array.isArray(option)) return option[1];
-
-    if (this.options.isCollection) {
-        if (this.textAttribute && option[this.textAttribute]) {
-            return option[this.textAttribute];
-        }
-    }
-
-    return option;
-};
-
-function createOption (value, text) {
+function createOption (value, text, disabled) {
     var node = document.createElement('option');
 
     //Set to empty-string if undefined or null, but not if 0, false, etc
     if (value === null || value === undefined) { value = ''; }
 
+    if(disabled) node.disabled = true;
     node.textContent = text;
     node.value = value;
 

@@ -1,7 +1,6 @@
 {
     "framework": "tap",
     "src_files": [
-        "ampersand-select-view.js",
         "test/*.js"
     ],
     "serve_files": [

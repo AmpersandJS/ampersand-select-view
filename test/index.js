@@ -135,6 +135,14 @@ suite('Options array with string items', function (s) {
         t.equal(select.options[select.selectedIndex].innerHTML, 'Please choose:');
 
     }));
+
+    s.test('options are enabled', sync(function (t) {
+        var optionNodes = view.el.querySelectorAll('select option');
+
+        t.equal(optionNodes[0].disabled, false);
+        t.equal(optionNodes[1].disabled, false);
+        t.equal(optionNodes[2].disabled, false);
+    }));
 });
 
 suite('Options array with array items', function (s) {

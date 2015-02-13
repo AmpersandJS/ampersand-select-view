@@ -269,7 +269,7 @@ SelectView.prototype.getOptionDisabled = function (option) {
 
     if (this.options.isCollection && this.disabledAttribute) return option[this.disabledAttribute];
 
-    return option;
+    return false;
 };
 
 SelectView.prototype.setMessage = function (message) {

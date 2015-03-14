@@ -23,4 +23,5 @@ addons:
   sauce_connect:
     username: ampersandjs-ci
     access_key:
-      secure: "qZGwdyj62108JOiUMZjgLGCQ8k9G/Z3HDhqzxaMmFC0PgxYX6Z0IglTeYdTUWhalIzjM/WplW2iV3i0hfM8ufvLh1XVHZfFb0ZUtAi7i8fmJMHUflQ3/8E3rJGsLRn06Z+mW1nJB2aC2BgqCKlu4qhYKfTAH1/wr4sd8ZMG87vg="
+      secure: "gd/90cxn7Z9li+nKDKTxuKizhCdL2LdRd1fiPuK8oEgRRNXAYnQzmY9Gw9DUjDPPsW5VtBWKdRcADJhzQcumTwGu34+m0GL7JK8H5Wcmu4JBlSP68kTXNOvONVe4jCwLZmllMV6fxiVDRxHAgCKniaOL1L+crn+zx5eBSDrTITQ="
+

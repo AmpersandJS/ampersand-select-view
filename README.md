@@ -77,6 +77,9 @@ module.exports = FormView.extend({
 
 Written by [@philip_roberts](twitter.com/philip_roberts).
 
+## contributing
+Due to CI browser testing issues ([1](https://support.saucelabs.com/entries/25614798-How-can-we-set-up-an-open-source-account-that-runs-tests-on-people-s-pull-requests-), [2](https://trello.com/c/jlx3EtvS)), a PR must receive two `+1`s from the core-team or maintainer, each with mention that x-browser tests pass in the [PR branch](https://help.github.com/articles/checking-out-pull-requests-locally/) (i.e. `testem ci`);
+
 ## license
 
 MIT

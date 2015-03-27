@@ -1,4 +1,9 @@
 # ampersand-select-view
+
+Lead Maintainer: [Christopher Dieringer (@cdaringe)](https://github.com/cdaringe)
+
+# overview
+
 A view module for intelligently rendering and validating selectbox input. Works well with ampersand-form-view.
 
 ![](https://travis-ci.org/AmpersandJS/ampersand-select-view.svg) ![](https://badge.fury.io/js/ampersand-select-view.svg)
@@ -150,7 +155,6 @@ module.exports = FormView.extend({
 ## credits
 
 Written by [@philip_roberts](twitter.com/philip_roberts).
-Lead Maintainer: [Christopher Dieringer (@cdaringe)](https://github.com/cdaringe)
 
 ## license
 

@@ -42,8 +42,8 @@ function SelectView (opts) {
     this.yieldModel = (opts.yieldModel === false) ? false : true;
 
     this.required = opts.required || false;
-    this.validClass = opts.validClass || 'select-valid';
-    this.invalidClass = opts.invalidClass || 'select-invalid';
+    this.validClass = opts.validClass || 'input-valid';
+    this.invalidClass = opts.invalidClass || 'input-invalid';
     this.requiredMessage = opts.requiredMessage || 'Selection required';
 
     this.onChange = this.onChange.bind(this);

@@ -21,6 +21,27 @@ var collection1 = new Collection([
 
 var BaseView = FormView.extend({
     fields: function () {
+        var requiredInvalid = window.requiredInvalid = new SelectView({
+                name: 'three.2',
+                parent: this,
+                options: collection1,
+                idAttribute: 'id',
+                textAttribute: 'title',
+                required: true,
+                unselectedText: 'show validation stuff when im selected after initial'
+        });
+
+        var requiredInvalidEager = window.requiredInvalidEager = new SelectView({
+                name: 'three.2',
+                parent: this,
+                options: collection1,
+                idAttribute: 'id',
+                textAttribute: 'title',
+                required: true,
+                eagerValidate: true,
+                unselectedText: 'show validation stuff when im selected no matter what'
+        });
+
         return [
             new SelectView({
                 name: 'one.1',
@@ -65,9 +86,11 @@ var BaseView = FormView.extend({
                 textAttribute: 'title',
                 unselectedText: 'please choose one'
             }),
+            requiredInvalid,
+            requiredInvalidEager,
 
             new SelectView({
-                name: 'three.1',
+                name: 'three.3',
                 parent: this,
                 options: collection1,
                 value: collection1.at(2),

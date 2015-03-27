@@ -2,6 +2,7 @@
 var domify = require('domify');
 var dom = require('ampersand-dom');
 var matches = require('matches-selector');
+var isArray = require('amp-is-array');
 
 //Replaceable with anything with label, message-container, message-text data-hooks and a <select>
 var defaultTemplate = [
@@ -15,25 +16,6 @@ var defaultTemplate = [
 ].join('\n');
 
 
-/* opts:
- *  - name:       name of the field
- *  - parent:     parent form reference
- *  - options:    array/collection of options to render into the select box
- *  - [unselectedText]: text to display if unselected
- *  - [value]:    initial value for the field
- *  - [el]:       dom node to use for the view
- *  - [required]: is field required
- *
- *  - [validClass]: class to apply to root element if valid
- *  - [invalidClass]: class to apply to root element if invalid
- *  - [requiredMessage]: message to display if invalid and required
- *
- *  Additional opts, if options is a collection:
- *  - [idAttribute]: model attribute to use as the id for the option node
- *  - [textAttribute]: model attribute to use as the text of the option node in the select box
- *  - [disabledAttribute]: boolean model attribute to flag disabling of the option node
- *  - [yieldModel]: (defaults true) if options is a collection, yields the full model rather than just it's id to .value
- */
 
 function SelectView (opts) {
     opts = opts || {};
@@ -53,8 +35,7 @@ function SelectView (opts) {
     }
 
     this.el = opts.el;
-    this.value = null;
-    this.label = opts.label || this.name;
+    this.label = opts.label || this.name; // init as string. render() mutates into DOM el with .textContent equal to this value
     this.parent = opts.parent;
     this.template = opts.template || defaultTemplate;
     this.unselectedText = opts.unselectedText;
@@ -69,20 +50,32 @@ function SelectView (opts) {
 
     this.render();
 
-    this.setValue(opts.value);
+    this.setValue(opts.value, opts.eagerValidate ? false : true);
 }
 
 SelectView.prototype.render = function () {
+    var elDom,
+        labelEl;
     if (this.rendered) return;
 
-    if (!this.el) this.el = domify(this.template);
+    elDom = domify(this.template);
+    if (!this.el) this.el = elDom;
+    else this.el.appendChild(elDom);
 
-    var label = this.el.querySelector('[data-hook~=label]');
-    if (label) {
-        label.textContent = this.label;
+    labelEl = this.el.querySelector('[data-hook~=label]');
+    if (labelEl) {
+        labelEl.textContent = this.label;
+        this.label = labelEl;
+    } else {
+        delete this.label;
     }
 
-    this.select = this.el.querySelector('select');
+    if (this.el.tagName === 'SELECT') {
+        this.select = this.el;
+    } else {
+        this.select = this.el.querySelector('select');
+    }
+    if (!this.select) throw new Error('no select found in template');
     if (matches(this.el, 'select')) this.select = this.el;
     if (this.select) this.select.setAttribute('name', this.name);
 
@@ -100,21 +93,26 @@ SelectView.prototype.render = function () {
     this.rendered = true;
 };
 
+
 SelectView.prototype.onChange = function () {
     var value = this.select.options[this.select.selectedIndex].value;
 
     if (this.options.isCollection && this.yieldModel) {
-        value = this.findModelForId(value);
+        value = this.getModelForId(value);
     }
 
     this.setValue(value);
 };
 
-SelectView.prototype.findModelForId = function (id) {
+/**
+ * Finds a model in the options collection provided an ID
+ * @param  {any} id
+ * @return {State}
+ * @throws {RangeError} If model not found
+ */
+SelectView.prototype.getModelForId = function (id) {
     return this.options.filter(function (model) {
-        if (!model[this.idAttribute]) return false;
-
-        //intentionally coerce for '1' == 1
+        // intentionally coerce for '1' == 1
         return model[this.idAttribute] == id;
     }.bind(this))[0];
 };
@@ -135,37 +133,45 @@ SelectView.prototype.renderOptions = function () {
 
     this.options.forEach(function (option) {
         this.select.appendChild(
-            createOption(this.getOptionValue(option), this.getOptionText(option), this.getOptionDisabled(option))
+            createOption(
+                this.getOptionValue(option),
+                this.getOptionText(option),
+                this.getOptionDisabled(option)
+            )
         );
     }.bind(this));
 };
 
+/**
+ * Updates the <select> control to set the select option when the option
+ * has changed programatically (i.e. not through direct user selection)
+ * @return {SelectView} this
+ * @throws {Error} If no option exists for this.value
+ */
 SelectView.prototype.updateSelectedOption = function () {
     var lookupValue = this.value;
 
-    if (!this.select) return;
-
-    if (!lookupValue) {
+    if (lookupValue === null || lookupValue === undefined || lookupValue === '') {
         this.select.selectedIndex = 0;
-        return;
+        return this;
     }
 
-    //Pull out the id if it's a model
+    // Pull out the id if it's a model
     if (this.options.isCollection && this.yieldModel) {
         lookupValue = lookupValue && lookupValue[this.idAttribute];
     }
 
-    if (lookupValue) {
+    if (lookupValue || lookupValue === 0) {
         for (var i = this.select.options.length; i--; i) {
-            if (this.select.options[i].value === lookupValue.toString()) {
+            if (this.select.options[i].value == lookupValue) {
                 this.select.selectedIndex = i;
-                return;
+                return this;
             }
         }
     }
 
-    //If failed to match any
-    this.select.selectedIndex = 0;
+    // failed to match any
+    throw new Error('no option exists for value: ' + lookupValue);
 };
 
 SelectView.prototype.remove = function () {
@@ -173,82 +179,83 @@ SelectView.prototype.remove = function () {
     this.el.removeEventListener('change', this.onChange, false);
 };
 
+/**
+ * Sets control to unselectedText option, or user specified option with `null`
+ * value
+ * @return {SelectView} this
+ */
 SelectView.prototype.clear = function() {
-    this.setValue('', true);
+    this.setValue(null, true);
+    return this;
 };
 
-SelectView.prototype.setValue = function (value, skipValidation) {
-    if (value === this.value) return;
-
-    //Coerce and find the right value based on yieldModel
-    if (this.options.isCollection) {
-        var model;
-
-        if (this.options.indexOf(value) === -1) {
-            model = this.findModelForId(value);
-        } else {
-            model = value;
-        }
-
-        if (this.yieldModel) {
-            value = model;
-        } else {
-            if (model) {
-                value = model[this.idAttribute];
-            } else {
-                value = void 0;
-            }
-        }
+SelectView.prototype.setValue = function (value, skipValidationMessage) {
+    var option;
+    if (value === null || value === undefined || value === '') {
+        this.value = null;
+    } else {
+        // Ensure corresponding option exists before assigning value
+        option = this.getOptionByValue(value);
+        this.value = isArray(option) ? option[0] : option;
     }
-
-    this.value = value;
-    if(!skipValidation) this.validate();
+    this.validate(skipValidationMessage);
     this.updateSelectedOption();
     if (this.parent) this.parent.update(this);
+    return this;
 };
 
-SelectView.prototype.validate = function () {
-    if(!this.value && !this.required) {
+SelectView.prototype.validate = function (skipValidationMessage) {
+    if (!this.required) {
+        // selected option always known to be in option set,
+        // thus field is always valid if not required
         this.valid = true;
-    } else {
-        this.valid = this.options.some(function (element) {
-            //If it's a collection, ensure it's in the collection
-            if (this.options.isCollection) {
-                if (this.yieldModel) {
-                    return this.options.indexOf(this.value) > -1;
-                } else {
-                    return !!this.findModelForId(this.value);
-                }
-            }
-
-            //[ ['foo', 'Foo Text'], ['bar', 'Bar Text'] ]
-            if (Array.isArray(element) && element.length === 2) {
-                return element[0] === this.value;
-            }
-
-            //[ 'foo', 'bar', 'baz' ]
-            return element === this.value;
-        }.bind(this));
+        return this.valid;
     }
 
-    if (!this.valid && this.required) {
-        this.setMessage(this.requiredMessage);
+    if (this.required && !this.value && this.value !== 0) {
+        this.valid = false;
+        if (!skipValidationMessage) this.setMessage(this.requiredMessage);
     } else {
-        this.setMessage();
+        this.valid = true;
+        if (!skipValidationMessage) this.setMessage();
     }
 
     return this.valid;
 };
 
+
+
+/**
+ * Gets the option corresponding to provided value.
+ * @param  {*} string, state, or model
+ * @return {*} string, array, state, or model
+ */
+SelectView.prototype.getOptionByValue = function(value) {
+    var model;
+    if (this.options.isCollection) {
+        // find value in collection, error if no model found
+        if (this.options.indexOf(value) === -1) model = this.getModelForId(value);
+        else model = value;
+        return this.yieldModel ? model : model[this.idAttribute];
+    } else if (isArray(this.options)) {
+        // find value value in options array
+        // find option, formatted [['val', 'text'], ...]
+        if (this.options.length && isArray(this.options[0])) {
+            for (var i = this.options.length - 1; i >= 0; i--) {
+                if (this.options[i][0] == value) return this.options[i];
+            }
+        }
+        // find option, formatted ['valAndText', ...] format
+        if (this.options.length && this.options.indexOf(value) !== -1) return value;
+        throw new Error('value not in set of provided options');
+    }
+    throw new Error('select option set invalid');
+};
+
+
 SelectView.prototype.getOptionValue = function (option) {
     if (Array.isArray(option)) return option[0];
-
-    if (this.options.isCollection) {
-        if (this.idAttribute && option[this.idAttribute]) {
-            return option[this.idAttribute];
-        }
-    }
-
+    if (this.options.isCollection) return option[this.idAttribute];
     return option;
 };
 

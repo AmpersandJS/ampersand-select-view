@@ -198,7 +198,7 @@ SelectView.prototype.clear = function() {
 
 /**
  * Sets control to option with the same value as initial value if specified, falls 
- * back to unselectedText or first avaialable option depending on availability
+ * back to either unselectedText or first option depending on availability
  * @return {SelectView} this
  */
 SelectView.prototype.reset = function() {

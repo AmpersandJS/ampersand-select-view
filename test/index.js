@@ -92,6 +92,28 @@ suite('Setup', function (s) {
         t.equal(selectName, 'word');
     }));
 
+    s.test('message container', sync(function (t) {
+        view = new SelectView({
+            name: 'num',
+            options: fieldOptions.options,
+            eagerValidate: false,
+            required: true,
+            unselectedText: 'default'
+        });
+
+        t.ok(view.mContainer.style.display === 'none', 'validation message should be hidden if eagerValidate is false');
+
+        view = new SelectView({
+            name: 'num',
+            options: fieldOptions.options,
+            eagerValidate: true,
+            required: true,
+            unselectedText: 'default'
+        });
+
+        t.ok(view.mContainer.style.display !== 'none', 'validation message should be displayed if eagerValidate is true');
+    }));
+
     s.test('eagerValidation', sync(function (t) {
         view = new SelectView({
             name: 'num',

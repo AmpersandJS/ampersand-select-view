@@ -91,7 +91,13 @@ SelectView.prototype.render = function () {
         }.bind(this));
     }
 
+    // Message DOM nodes
+    this.mContainer = this.el.querySelector('[data-hook~=message-container]');
+    this.mText = this.el.querySelector('[data-hook~=message-text]');
+
     this.rendered = true;
+
+    return this;
 };
 
 
@@ -230,10 +236,10 @@ SelectView.prototype.validate = function (skipValidationMessage) {
 
     if (this.required && !this.value && this.value !== 0) {
         this.valid = false;
-        if (!skipValidationMessage) this.setMessage(this.requiredMessage);
+        this.toggleMessage(skipValidationMessage, this.requiredMessage);
     } else {
         this.valid = true;
-        if (!skipValidationMessage) this.setMessage();
+        this.toggleMessage(skipValidationMessage);
     }
 
     return this.valid;
@@ -244,7 +250,7 @@ SelectView.prototype.validate = function (skipValidationMessage) {
  * @return {SelectView} this
  */
 SelectView.prototype.beforeSubmit = function () {
-    this.setValue(this.select.options[this.select.selectedIndex] && this.select.options[this.select.selectedIndex].value, false);
+    this.setValue(this.select.options[this.select.selectedIndex] && this.select.options[this.select.selectedIndex].value);
     return this;
 };
 
@@ -302,20 +308,25 @@ SelectView.prototype.getOptionDisabled = function (option) {
     return false;
 };
 
-SelectView.prototype.setMessage = function (message) {
-    var mContainer = this.el.querySelector('[data-hook~=message-container]');
-    var mText = this.el.querySelector('[data-hook~=message-text]');
+SelectView.prototype.toggleMessage = function (hide, message) {
+    if (!this.mContainer || !this.mText) return;
 
-    if (!mContainer || !mText) return;
+    if(hide) {
+        dom.hide(this.mContainer);
+        this.mText.textContent = '';
+        dom.removeClass(this.el, this.validClass);
+        dom.removeClass(this.el, this.invalidClass);
+        return;
+    }
 
     if (message) {
-        dom.show(mContainer);
-        mText.textContent = message;
+        dom.show(this.mContainer);
+        this.mText.textContent = message;
         dom.addClass(this.el, this.invalidClass);
         dom.removeClass(this.el, this.validClass);
     } else {
-        dom.hide(mContainer);
-        mText.textContent = '';
+        dom.hide(this.mContainer);
+        this.mText.textContent = '';
         dom.addClass(this.el, this.validClass);
         dom.removeClass(this.el, this.invalidClass);
     }

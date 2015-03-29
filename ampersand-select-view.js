@@ -39,6 +39,7 @@ function SelectView (opts) {
     this.parent = opts.parent;
     this.template = opts.template || defaultTemplate;
     this.unselectedText = opts.unselectedText;
+    this.startingValue = opts.value;
     this.yieldModel = (opts.yieldModel === false) ? false : true;
 
     this.required = opts.required || false;
@@ -189,6 +190,23 @@ SelectView.prototype.clear = function() {
     return this;
 };
 
+/**
+ * Sets control to option with the same value as initial value if specified, falls 
+ * back to unselectedText or first avaialable option depending on availability
+ * @return {SelectView} this
+ */
+SelectView.prototype.reset = function() {
+    if(this.startingValue) {
+        this.setValue(this.startingValue, true);
+    } else if(this.unselectedText) {
+        this.setValue(null, true);
+    } else if(this.select.options[0] && this.select.options[0].value) {
+        this.setValue(this.select.options[0].value, true);
+    }
+
+    return this;
+};
+
 SelectView.prototype.setValue = function (value, skipValidationMessage) {
     var option;
     if (value === null || value === undefined || value === '') {
@@ -223,7 +241,14 @@ SelectView.prototype.validate = function (skipValidationMessage) {
     return this.valid;
 };
 
-
+/**
+ * Called by ForumView on submit 
+ * @return {SelectView} this
+ */
+SelectView.prototype.beforeSubmit = function () {
+    this.setValue(this.select.options[this.select.selectedIndex] && this.select.options[this.select.selectedIndex].value, false);
+    return this;
+};
 
 /**
  * Gets the option corresponding to provided value.

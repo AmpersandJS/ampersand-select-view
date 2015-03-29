@@ -198,10 +198,8 @@ SelectView.prototype.clear = function() {
 SelectView.prototype.reset = function() {
     if(this.startingValue) {
         this.setValue(this.startingValue, true);
-    } else if(this.unselectedText) {
-        this.setValue(null, true);
-    } else if(this.select.options[0] && this.select.options[0].value) {
-        this.setValue(this.select.options[0].value, true);
+    } else {
+        this.setValue(this.select.options[0] && this.select.options[0].value, true);
     }
 
     return this;

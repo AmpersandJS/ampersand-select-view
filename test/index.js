@@ -226,6 +226,7 @@ suite('Utility Methods', function (s) {
 
         view.reset();
         t.equal(select.options[select.selectedIndex].value, '');
+        t.equal(select.options[select.selectedIndex].text, 'Please choose:');
     }));
 
     s.test('beforeSubmit', sync(function (t) {

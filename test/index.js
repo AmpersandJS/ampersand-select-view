@@ -101,7 +101,7 @@ suite('Setup', function (s) {
             unselectedText: 'default'
         });
 
-        t.ok(view.mContainer.style.display === 'none', 'validation message should be hidden if eagerValidate is false');
+        t.ok(view.el.querySelector('[data-hook~=message-container]').style.display === 'none', 'validation message should be hidden if eagerValidate is false');
 
         view = new SelectView({
             name: 'num',
@@ -111,7 +111,7 @@ suite('Setup', function (s) {
             unselectedText: 'default'
         });
 
-        t.ok(view.mContainer.style.display !== 'none', 'validation message should be displayed if eagerValidate is true');
+        t.ok(view.el.querySelector('[data-hook~=message-container]').style.display !== 'none', 'validation message should be displayed if eagerValidate is true');
     }));
 
     s.test('eagerValidation', sync(function (t) {
@@ -205,18 +205,20 @@ suite('Utility Methods', function (s) {
     s.test('reset on view with intial value', sync(function (t) {
         view = new SelectView({
             name: 'word',
-            options: arr,
-            value: 'three',
+            options: [0, 1, 2],
+            value: 0,
             unselectedText: 'Please choose:'
         });
 
         var select = view.el.querySelector('select');
 
-        view.setValue('one');
-        t.equal(select.options[select.selectedIndex].value, 'one');
+        t.equal(view.value, 0);
+
+        view.setValue(2);
+        t.equal(select.options[select.selectedIndex].value, '2');
         
         view.reset();
-        t.equal(select.options[select.selectedIndex].value, 'three');
+        t.equal(view.value, 0);
     }));
 
     s.test('reset on view with no initial value', sync(function (t) {
@@ -231,24 +233,7 @@ suite('Utility Methods', function (s) {
         t.equal(select.options[select.selectedIndex].value, 'three');
 
         view.reset();
-        t.equal(select.options[select.selectedIndex].value, 'one');
-    }));
-
-    s.test('reset on view with `unselectedText` and no initial value', sync(function (t) {
-        view = new SelectView({
-            name: 'word',
-            options: arr,
-            unselectedText: 'Please choose:'
-        });
-
-        var select = view.el.querySelector('select');
-
-        view.setValue('one');
-        t.equal(select.options[select.selectedIndex].value, 'one');
-
-        view.reset();
-        t.equal(select.options[select.selectedIndex].value, '');
-        t.equal(select.options[select.selectedIndex].text, 'Please choose:');
+        t.equal(select.options[select.selectedIndex].value, 'three');
     }));
 
     s.test('beforeSubmit', sync(function (t) {
@@ -700,5 +685,4 @@ suite('With ampersand collection', function (s) {
         t.equal(optionNodes[3].disabled, false);
         t.equal(optionNodes[4].disabled, true);
     }));
-
 });

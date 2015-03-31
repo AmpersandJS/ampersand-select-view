@@ -91,10 +91,6 @@ SelectView.prototype.render = function () {
         }.bind(this));
     }
 
-    // Message DOM nodes
-    this.mContainer = this.el.querySelector('[data-hook~=message-container]');
-    this.mText = this.el.querySelector('[data-hook~=message-text]');
-
     this.rendered = true;
 
     return this;
@@ -197,15 +193,13 @@ SelectView.prototype.clear = function() {
 };
 
 /**
- * Sets control to option with the same value as initial value if specified, falls 
- * back to either unselectedText or first option depending on availability
+ * Sets the selected option and view value to the original option value provided 
+ * during construction
  * @return {SelectView} this
  */
 SelectView.prototype.reset = function() {
-    if(this.startingValue) {
+    if(this.startingValue !== undefined) {
         this.setValue(this.startingValue, true);
-    } else {
-        this.setValue(this.select.options[0] && this.select.options[0].value, true);
     }
 
     return this;
@@ -250,7 +244,8 @@ SelectView.prototype.validate = function (skipValidationMessage) {
  * @return {SelectView} this
  */
 SelectView.prototype.beforeSubmit = function () {
-    this.setValue(this.select.options[this.select.selectedIndex] && this.select.options[this.select.selectedIndex].value);
+    this.setValue(this.select.options[this.select.selectedIndex].value);
+    
     return this;
 };
 
@@ -309,24 +304,27 @@ SelectView.prototype.getOptionDisabled = function (option) {
 };
 
 SelectView.prototype.toggleMessage = function (hide, message) {
-    if (!this.mContainer || !this.mText) return;
+    var mContainer = this.el.querySelector('[data-hook~=message-container]'),
+        mText = this.el.querySelector('[data-hook~=message-text]');
+
+    if (!mContainer || !mText) return;
 
     if(hide) {
-        dom.hide(this.mContainer);
-        this.mText.textContent = '';
+        dom.hide(mContainer);
+        mText.textContent = '';
         dom.removeClass(this.el, this.validClass);
         dom.removeClass(this.el, this.invalidClass);
         return;
     }
 
     if (message) {
-        dom.show(this.mContainer);
-        this.mText.textContent = message;
+        dom.show(mContainer);
+        mText.textContent = message;
         dom.addClass(this.el, this.invalidClass);
         dom.removeClass(this.el, this.validClass);
     } else {
-        dom.hide(this.mContainer);
-        this.mText.textContent = '';
+        dom.hide(mContainer);
+        mText.textContent = '';
         dom.addClass(this.el, this.validClass);
         dom.removeClass(this.el, this.invalidClass);
     }

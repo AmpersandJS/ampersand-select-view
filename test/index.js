@@ -202,7 +202,7 @@ suite('Utility Methods', function (s) {
         t.equal(view.valid, false);
     }));
 
-    s.test('reset on view with intial value', sync(function (t) {
+    s.test('reset on view with initial value', sync(function (t) {
         view = new SelectView({
             name: 'word',
             options: [0, 1, 2],
@@ -234,6 +234,7 @@ suite('Utility Methods', function (s) {
 
         view.reset();
         t.equal(select.options[select.selectedIndex].value, 'three');
+        t.equal(view.value, 'three');
     }));
 
     s.test('beforeSubmit', sync(function (t) {

@@ -198,10 +198,7 @@ SelectView.prototype.clear = function() {
  * @return {SelectView} this
  */
 SelectView.prototype.reset = function() {
-    if(this.startingValue !== undefined) {
-        this.setValue(this.startingValue, true);
-    }
-
+    if(this.startingValue !== undefined) this.setValue(this.startingValue, true);
     return this;
 };
 
@@ -245,7 +242,6 @@ SelectView.prototype.validate = function (skipValidationMessage) {
  */
 SelectView.prototype.beforeSubmit = function () {
     this.setValue(this.select.options[this.select.selectedIndex].value);
-    
     return this;
 };
 

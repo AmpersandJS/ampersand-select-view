@@ -237,7 +237,7 @@ SelectView.prototype.validate = function (skipValidationMessage) {
 };
 
 /**
- * Called by ForumView on submit 
+ * Called by FormView on submit 
  * @return {SelectView} this
  */
 SelectView.prototype.beforeSubmit = function () {

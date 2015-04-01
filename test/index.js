@@ -237,11 +237,12 @@ suite('Utility Methods', function (s) {
         t.equal(view.value, 'three');
     }));
 
-    s.test('beforeSubmit', sync(function (t) {
+    s.test('beforeSubmit with options', sync(function (t) {
         view = new SelectView({
             name: 'word',
             options: arr,
-            required: true
+            required: true,
+            idAttribute: 'someOtherKey'
         });
 
         var select = view.el.querySelector('select');
@@ -252,6 +253,85 @@ suite('Utility Methods', function (s) {
         view.beforeSubmit();
         t.equal(view.value, 'one');
         t.equal(view.valid, true);
+
+    }));
+
+    s.test('beforeSubmit with array options', sync(function (t) {
+        view = new SelectView({
+            name: 'word',
+            options: [ [0, 'Option Zero'], [1, 1, false], [1.5, 1.5, true] ],
+            required: true,
+            idAttribute: 'someOtherKey'
+        });
+
+        var select = view.el.querySelector('select');
+        t.equal(select.options[select.selectedIndex].text, 'Option Zero');
+
+        t.equal(view.valid, false);
+        t.equal(view.value, null);
+        view.beforeSubmit();
+        t.equal(view.value, 0);
+        t.equal(view.valid, true);
+
+    }));
+
+    s.test('beforeSubmit with collection and yieldModel: false', sync(function (t) {
+        coll = new Collection([
+            { id: 0, someOtherKey: 'zero', title: 'Option zero' },
+            { id: 1, someOtherKey: 'foo',  title: 'Option one' },
+            { id: 2, someOtherKey: 'bar',  title: 'Option two' },
+            { id: 3, someOtherKey: 'baz',  title: 'Option three' }
+        ]);
+
+        view = new SelectView({
+            name: 'word',
+            options: coll,
+            required: true,
+            yieldModel: false,
+            idAttribute: 'someOtherKey'
+        });
+
+        var select = view.el.querySelector('select');
+        t.equal(select.options[select.selectedIndex].value, 'zero');
+
+        t.equal(view.valid, false);
+        t.equal(view.value, null);
+        view.beforeSubmit();
+        t.equal(view.value, 'zero');
+        t.equal(view.valid, true);
+
+    }));
+
+
+    s.test('beforeSubmit with collection and yieldModel: true', sync(function (t) {
+        coll = new Collection([
+            { id: 0, someOtherKey: 'zero', title: 'Option zero' },
+            { id: 1, someOtherKey: 'foo',  title: 'Option one' },
+            { id: 2, someOtherKey: 'bar',  title: 'Option two' },
+            { id: 3, someOtherKey: 'baz',  title: 'Option three' }
+        ]);
+
+        view = new SelectView({
+            name: 'word',
+            options: coll,
+            required: true,
+            yieldModel: true,
+            idAttribute: 'someOtherKey'
+        });
+
+        var select = view.el.querySelector('select');
+        t.equal(select.options[select.selectedIndex].value, 'zero');
+
+        select.selectedIndex = 2;
+
+        t.equal(view.valid, false);
+        t.equal(view.value, null);
+        view.beforeSubmit();
+        t.deepEqual(view.value, coll.at(2));
+        t.equal(view.value.get('title'), 'Option two');
+        t.equal(view.value.get('id'), 2);
+        t.equal(view.valid, true);
+
     }));
 });
 

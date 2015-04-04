@@ -30,7 +30,7 @@ Alias to calling `setValue(null, true)`.  Sets the selected option to either the
 Sets the selected option and view value to the original option value provided during construction.
 
 ### setValue([value, skipValidationMessage]) - [Function] - returns `this`
-Sets the selected option to that which matches the provided value.  Updates the view's `.value` accordingly.  SelectView will error if no matching option exists.  `null, `undefined`, and `''` values will preferentially select [unselectedText](#general-options) if defined.
+Sets the selected option to that which matches the provided value.  Updates the view's `.value` accordingly.  SelectView will error if no matching option exists.  `null`, `undefined`, and `''` values will preferentially select [unselectedText](#general-options) if defined.
 
 ### constructor - [Function] `new SelectView([options])`
 #### options

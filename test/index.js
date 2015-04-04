@@ -244,6 +244,22 @@ suite('Utility Methods', function (s) {
         t.equal(view.value, 'one');
     }));
 
+    s.test('reset on view where initial value missing', sync(function (t) {
+        var ops = [0, 1, 2];
+        view = new SelectView({
+            name: 'word',
+            options: ops,
+            value: 2
+        });
+        delete ops[2];
+        try {
+            view.reset();
+            t.ok(false, 'reset occurred without resetting view.value to view.startingValue');
+        } catch (err) {
+            t.ok(true, 'reset enforces that original value present in option set');
+        }
+    }));
+
     s.test('beforeSubmit', sync(function (t) {
         var called, formView;
         var formEl = document.createElement('form');

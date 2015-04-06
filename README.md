@@ -30,7 +30,7 @@ Alias to calling `setValue(null, true)`.  Sets the selected option to either the
 Sets the selected option and view value to the original option value provided during construction.
 
 ### setValue([value, skipValidationMessage]) - [Function] - returns `this`
-Sets the selected option to that which matches the provided value.  Updates the view's `.value` accordingly.  SelectView will error if no matching option exists.  `null, `undefined`, and `''` values will preferentially select [unselectedText](#general-options) if defined.
+Sets the selected option to that which matches the provided value.  Updates the view's `.value` accordingly.  SelectView will error if no matching option exists.  `null`, `undefined`, and `''` values will preferentially select [unselectedText](#general-options) if defined.
 
 ### constructor - [Function] `new SelectView([options])`
 #### options
@@ -58,6 +58,8 @@ If using a collection to produce `<select>` `<option>`s, the following may also 
 - `[idAttribute]`: model attribute to use as the id for the option node.  This will be returned by `SelectView.prototype.value`
 - `[textAttribute]`: model attribute to use as the text of the option node in the select box
 - `[yieldModel]`: [default: `true`] if options is a collection, yields the full model rather than just its `idAttribute` to `.value`
+
+When the collection changes, the view will try and maintain its currently `.value`.  If the corresponding model is removed, the <select> control will default to the 0th index <option> and update its value accordingly.
 
 ## custom template
 You may override the default template by providing your own template string to the [constructor](#constructor---function-new-selectviewoptions) options hash.  Technically, all you must provided is a `<select>` element.  However, your template may include the following under a single root element:

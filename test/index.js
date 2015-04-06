@@ -1,5 +1,6 @@
 var suite = require('tape-suite');
 var viewConventions = require('ampersand-view-conventions');
+var FormView = require('ampersand-form-view');
 var SelectView = require('../ampersand-select-view');
 var AmpersandState = require('ampersand-state');
 var AmpersandCollection = require('ampersand-collection');
@@ -142,8 +143,12 @@ suite('Utility Methods', function (s) {
         var select = view.el.querySelector('select');
 
         t.equal(select.options[select.selectedIndex].value, 'two');
-        view.clear();
-        t.equal(select.options[select.selectedIndex].value, 'one');
+        try {
+            view.clear();
+            t.ok(false, 'view cleared without null option');
+        } catch(err) {
+            t.ok(true, 'view unable to clear without null option');
+        }
     }));
 
     s.test('clear on view with `unselectedText`', sync(function (t) {
@@ -161,7 +166,6 @@ suite('Utility Methods', function (s) {
         view.clear();
         t.equal(select.options[select.selectedIndex].value, '');
         t.equal(select.options[select.selectedIndex].text, 'Please choose:');
-        view.validate();
         t.equal(view.valid, true);
     }));
 
@@ -176,10 +180,13 @@ suite('Utility Methods', function (s) {
         var select = view.el.querySelector('select');
 
         t.equal(select.options[select.selectedIndex].value, 'two');
-        view.clear();
-        t.equal(select.options[select.selectedIndex].value, 'one');
+        try {
+            view.clear();
+            t.ok(false, 'view cleared without null option');
+        } catch(err) {
+            t.ok(true, 'view unable to clear without null option');
+        }
         t.equal(view.value, null);
-        view.validate();
         t.equal(view.valid, false);
     }));
 
@@ -216,7 +223,7 @@ suite('Utility Methods', function (s) {
 
         view.setValue(2);
         t.equal(select.options[select.selectedIndex].value, '2');
-        
+
         view.reset();
         t.equal(view.value, 0);
     }));
@@ -233,104 +240,46 @@ suite('Utility Methods', function (s) {
         t.equal(select.options[select.selectedIndex].value, 'three');
 
         view.reset();
-        t.equal(select.options[select.selectedIndex].value, 'three');
-        t.equal(view.value, 'three');
+        t.equal(select.options[select.selectedIndex].value, 'one');
+        t.equal(view.value, 'one');
     }));
 
-    s.test('beforeSubmit with options', sync(function (t) {
+    s.test('reset on view where initial value missing', sync(function (t) {
+        var ops = [0, 1, 2];
+        view = new SelectView({
+            name: 'word',
+            options: ops,
+            value: 2
+        });
+        delete ops[2];
+        try {
+            view.reset();
+            t.ok(false, 'reset occurred without resetting view.value to view.startingValue');
+        } catch (err) {
+            t.ok(true, 'reset enforces that original value present in option set');
+        }
+    }));
+
+    s.test('beforeSubmit', sync(function (t) {
+        var called, formView;
+        var formEl = document.createElement('form');
         view = new SelectView({
             name: 'word',
             options: arr,
             required: true,
-            idAttribute: 'someOtherKey'
+            beforeSubmit: function() {
+                called = true;
+            }
+        });
+        formView = new FormView({
+            el: formEl,
+            autoRender: true,
+            fields: [view]
         });
 
-        var select = view.el.querySelector('select');
-        t.equal(select.options[select.selectedIndex].value, 'one');
-
-        t.equal(view.valid, false);
-        t.equal(view.value, null);
-        view.beforeSubmit();
-        t.equal(view.value, 'one');
-        t.equal(view.valid, true);
-
-    }));
-
-    s.test('beforeSubmit with array options', sync(function (t) {
-        view = new SelectView({
-            name: 'word',
-            options: [ [0, 'Option Zero'], [1, 1, false], [1.5, 1.5, true] ],
-            required: true,
-            idAttribute: 'someOtherKey'
-        });
-
-        var select = view.el.querySelector('select');
-        t.equal(select.options[select.selectedIndex].text, 'Option Zero');
-
-        t.equal(view.valid, false);
-        t.equal(view.value, null);
-        view.beforeSubmit();
-        t.equal(view.value, 0);
-        t.equal(view.valid, true);
-
-    }));
-
-    s.test('beforeSubmit with collection and yieldModel: false', sync(function (t) {
-        coll = new Collection([
-            { id: 0, someOtherKey: 'zero', title: 'Option zero' },
-            { id: 1, someOtherKey: 'foo',  title: 'Option one' },
-            { id: 2, someOtherKey: 'bar',  title: 'Option two' },
-            { id: 3, someOtherKey: 'baz',  title: 'Option three' }
-        ]);
-
-        view = new SelectView({
-            name: 'word',
-            options: coll,
-            required: true,
-            yieldModel: false,
-            idAttribute: 'someOtherKey'
-        });
-
-        var select = view.el.querySelector('select');
-        t.equal(select.options[select.selectedIndex].value, 'zero');
-
-        t.equal(view.valid, false);
-        t.equal(view.value, null);
-        view.beforeSubmit();
-        t.equal(view.value, 'zero');
-        t.equal(view.valid, true);
-
-    }));
-
-
-    s.test('beforeSubmit with collection and yieldModel: true', sync(function (t) {
-        coll = new Collection([
-            { id: 0, someOtherKey: 'zero', title: 'Option zero' },
-            { id: 1, someOtherKey: 'foo',  title: 'Option one' },
-            { id: 2, someOtherKey: 'bar',  title: 'Option two' },
-            { id: 3, someOtherKey: 'baz',  title: 'Option three' }
-        ]);
-
-        view = new SelectView({
-            name: 'word',
-            options: coll,
-            required: true,
-            yieldModel: true,
-            idAttribute: 'someOtherKey'
-        });
-
-        var select = view.el.querySelector('select');
-        t.equal(select.options[select.selectedIndex].value, 'zero');
-
-        select.selectedIndex = 2;
-
-        t.equal(view.valid, false);
-        t.equal(view.value, null);
-        view.beforeSubmit();
-        t.deepEqual(view.value, coll.at(2));
-        t.equal(view.value.get('title'), 'Option two');
-        t.equal(view.value.get('id'), 2);
-        t.equal(view.valid, true);
+        formView.beforeSubmit();
+        t.ok(called, 'beforeSubmit gets registered');
+        t.ok(view.valid, 'form is valid on form submit');
 
     }));
 });
@@ -563,7 +512,7 @@ suite('With ampersand collection', function (s) {
         var coll = new Collection([
             { id: 1, someOtherKey: 'foo', title: 'Option one' },
             { id: 2, someOtherKey: 'bar', title: 'Option two' },
-            { id: 3, someOtherKey: 'baz', title: 'Option three' },
+            { id: 3, someOtherKey: 'baz', title: 'Option three' }
         ]);
 
         view = new SelectView({
@@ -574,21 +523,26 @@ suite('With ampersand collection', function (s) {
         });
 
         var optionNodes = view.el.querySelectorAll('select option');
-        t.equal(optionNodes.length, 3);
+        t.equal(optionNodes.length, 3, 'should have same #<option> nodes corresponding to collection models');
 
         coll.add({ id: 4, someOtherKey: 'four', title: 'Option four' });
+        optionNodes = view.el.querySelectorAll('select option');
+        t.equal(optionNodes.length, 4, 'should add <option> nodes when adding collection models');
 
         optionNodes = view.el.querySelectorAll('select option');
         t.equal(optionNodes.length, 4);
         t.equal(optionNodes[3].value, '4');
         t.equal(optionNodes[3].textContent, 'Option four');
 
+        t.equal(view.value, coll.models[0], 'default value should be first in collection');
         coll.remove({ id: 1 });
-
         optionNodes = view.el.querySelectorAll('select option');
-        t.equal(optionNodes.length, 3);
-        t.equal(optionNodes[0].value, '2');
-        t.equal(optionNodes[0].textContent, 'Option two');
+        t.equal(view.value, coll.models[0], 'should set value to first value in collection when current selected model removed');
+        t.equal(optionNodes.length, 3, 'option nodes should be reduced when model removed');
+
+        view.setValue(4);
+        coll.remove({ id: 2 });
+        t.equal(view.value, coll.get(4), 'should retain value if unassociated model removed');
 
         coll.reset([
             { id: 10, someOtherKey: 'bar', title: 'Option ten' },
@@ -647,6 +601,7 @@ suite('With ampersand collection', function (s) {
             { id: null, someOtherKey: 'bar', title: 'Option null' },
             { id: 2, someOtherKey: 'baz', title: 'Option two' },
         ]);
+
         view = new SelectView({
             name: 'testNullId',
             options: coll,
@@ -659,10 +614,10 @@ suite('With ampersand collection', function (s) {
         t.equal(optionNodes.length, 3);
 
         t.equal(optionNodes[0].value, '0', 'option before null model has correct value');
-        t.equal(optionNodes[0].textContent, 'Option zero');
+        t.equal(optionNodes[0].textContent, 'Option zero', 'selected option should be Option zero');
 
-        t.equal(view.value, null); // null option set by default when no value provided
-        t.equal(optionNodes[1].value, '');
+        t.equal(view.value, null, 'Option null should be selected with field value: null');
+        t.equal(optionNodes[1].value, '', 'selected option should be empty string');
 
         t.equal(optionNodes[2].value, '2', 'option after null model has correct value');
         t.equal(optionNodes[2].textContent, 'Option two');

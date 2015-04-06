@@ -42,6 +42,8 @@ function SelectView (opts) {
     this.startingValue = opts.value;
     this.yieldModel = (opts.yieldModel === false) ? false : true;
 
+    if(opts.beforeSubmit) this.beforeSubmit = opts.beforeSubmit;
+    this.eagerValidate = opts.eagerValidate;
     this.required = opts.required || false;
     this.validClass = opts.validClass || 'input-valid';
     this.invalidClass = opts.invalidClass || 'input-invalid';
@@ -49,9 +51,9 @@ function SelectView (opts) {
 
     this.onChange = this.onChange.bind(this);
 
-    this.render();
+    this.startingValue = this.setValue(opts.value, this.eagerValidate ? false : true, true);
 
-    this.setValue(opts.value, opts.eagerValidate ? false : true);
+    this.render();
 }
 
 SelectView.prototype.render = function () {
@@ -85,12 +87,20 @@ SelectView.prototype.render = function () {
     this.updateSelectedOption();
 
     if (this.options.isCollection) {
-        this.options.on('add remove reset', function () {
+        this.options.on('add remove reset', function() {
+            var setValueFirstModel = function() {
+                if (!this.options.length) return;
+                if (this.yieldModel) this.setValue(this.options.models[0]);
+                else this.setValue(this.options.models[0][this.idAttribute]);
+            }.bind(this);
+
             this.renderOptions();
-            this.updateSelectedOption();
+            if (this.hasOptionByValue(this.value)) this.updateSelectedOption();
+            else setValueFirstModel();
         }.bind(this));
     }
 
+    this.validate(this.eagerValidate ? false : true, true);
     this.rendered = true;
 
     return this;
@@ -155,8 +165,12 @@ SelectView.prototype.updateSelectedOption = function () {
     var lookupValue = this.value;
 
     if (lookupValue === null || lookupValue === undefined || lookupValue === '') {
-        this.select.selectedIndex = 0;
-        return this;
+        if (this.unselectedText) {
+            this.select.selectedIndex = 0;
+            return this;
+        } else if (!this.options.length && this.value === null) {
+            return this;
+        }
     }
 
     // Pull out the id if it's a model
@@ -164,7 +178,8 @@ SelectView.prototype.updateSelectedOption = function () {
         lookupValue = lookupValue && lookupValue[this.idAttribute];
     }
 
-    if (lookupValue || lookupValue === 0) {
+    if (lookupValue || lookupValue === 0 || lookupValue === null) {
+        if (lookupValue === null) lookupValue = ''; // DOM sees only '' empty value
         for (var i = this.select.options.length; i--; i) {
             if (this.select.options[i].value == lookupValue) {
                 this.select.selectedIndex = i;
@@ -193,28 +208,52 @@ SelectView.prototype.clear = function() {
 };
 
 /**
- * Sets the selected option and view value to the original option value provided 
+ * Sets the selected option and view value to the original option value provided
  * during construction
  * @return {SelectView} this
  */
 SelectView.prototype.reset = function() {
-    if(this.startingValue !== undefined) this.setValue(this.startingValue, true);
-    return this;
+    return this.setValue(this.startingValue, true);
 };
 
-SelectView.prototype.setValue = function (value, skipValidationMessage) {
-    var option;
+SelectView.prototype.setValue = function (value, skipValidationMessage, init) {
+    var option, model, nullValid;
+
     if (value === null || value === undefined || value === '') {
         this.value = null;
+
+        // test if null is a valid option
+        if (this.unselectedText) {
+            nullValid = true;
+        } else {
+            nullValid = this.hasOptionByValue(null);
+        }
+
+        // empty value requested to be set.  This may be because the field is just
+        // initializing.  If initializing and `null` isn't in the honored option set
+        // set the select to the 0-th index
+        if (init && this.options.length && !nullValid) {
+            // no initial value passed, set initial value to first item in set
+            if (this.options.isCollection) {
+                model = this.options.models[0];
+                this.value = this.yieldModel ? model : model[this.idAttribute];
+            } else {
+                if (isArray(this.options[0])) {
+                    this.value = this.options[0][0];
+                } else {
+                    this.value = this.options[0];
+                }
+            }
+        }
     } else {
         // Ensure corresponding option exists before assigning value
         option = this.getOptionByValue(value);
         this.value = isArray(option) ? option[0] : option;
     }
     this.validate(skipValidationMessage);
-    this.updateSelectedOption();
+    if (this.select) this.updateSelectedOption();
     if (this.parent) this.parent.update(this);
-    return this;
+    return this.value;
 };
 
 SelectView.prototype.validate = function (skipValidationMessage) {
@@ -227,22 +266,21 @@ SelectView.prototype.validate = function (skipValidationMessage) {
 
     if (this.required && !this.value && this.value !== 0) {
         this.valid = false;
-        this.toggleMessage(skipValidationMessage, this.requiredMessage);
+        if (this.select) this.toggleMessage(skipValidationMessage, this.requiredMessage);
     } else {
         this.valid = true;
-        this.toggleMessage(skipValidationMessage);
+        if (this.select) this.toggleMessage(skipValidationMessage);
     }
 
     return this.valid;
 };
 
 /**
- * Called by FormView on submit 
+ * Called by FormView on submit
  * @return {SelectView} this
  */
 SelectView.prototype.beforeSubmit = function () {
     this.setValue(this.select.options[this.select.selectedIndex].value);
-    return this;
 };
 
 /**
@@ -256,6 +294,7 @@ SelectView.prototype.getOptionByValue = function(value) {
         // find value in collection, error if no model found
         if (this.options.indexOf(value) === -1) model = this.getModelForId(value);
         else model = value;
+        if (!model) throw new Error('model or model idAttribute not found in options collection');
         return this.yieldModel ? model : model[this.idAttribute];
     } else if (isArray(this.options)) {
         // find value value in options array
@@ -273,6 +312,23 @@ SelectView.prototype.getOptionByValue = function(value) {
 };
 
 
+
+/**
+ * Tests if option set has an option corresponding to the provided value
+ * @param  {*} value
+ * @return {Boolean}
+ */
+SelectView.prototype.hasOptionByValue = function(value) {
+    try {
+        this.getOptionByValue(value);
+        return true;
+    } catch (err) {
+        return false;
+    }
+};
+
+
+
 SelectView.prototype.getOptionValue = function (option) {
     if (Array.isArray(option)) return option[0];
     if (this.options.isCollection) return option[this.idAttribute];
@@ -281,9 +337,8 @@ SelectView.prototype.getOptionValue = function (option) {
 
 SelectView.prototype.getOptionText = function (option) {
     if (Array.isArray(option)) return option[1];
-
     if (this.options.isCollection) {
-        if (this.textAttribute && option[this.textAttribute]) {
+        if (this.textAttribute && option[this.textAttribute] !== undefined) {
             return option[this.textAttribute];
         }
     }
@@ -293,7 +348,6 @@ SelectView.prototype.getOptionText = function (option) {
 
 SelectView.prototype.getOptionDisabled = function (option) {
     if (Array.isArray(option)) return option[2];
-
     if (this.options.isCollection && this.disabledAttribute) return option[this.disabledAttribute];
 
     return false;
@@ -305,7 +359,7 @@ SelectView.prototype.toggleMessage = function (hide, message) {
 
     if (!mContainer || !mText) return;
 
-    if(hide) {
+    if (hide) {
         dom.hide(mContainer);
         mText.textContent = '';
         dom.removeClass(this.el, this.validClass);
@@ -330,7 +384,7 @@ function createOption (value, text, disabled) {
     var node = document.createElement('option');
 
     //Set to empty-string if undefined or null, but not if 0, false, etc
-    if (value === null || value === undefined) { value = ''; }
+    if (value === null || value === undefined) value = '';
 
     if(disabled) node.disabled = true;
     node.textContent = text;

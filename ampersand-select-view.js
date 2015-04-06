@@ -261,6 +261,7 @@ SelectView.prototype.validate = function (skipValidationMessage) {
         // selected option always known to be in option set,
         // thus field is always valid if not required
         this.valid = true;
+        if (this.select) this.toggleMessage(skipValidationMessage);
         return this.valid;
     }
 

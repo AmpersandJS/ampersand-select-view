@@ -538,4 +538,36 @@ suite('With ampersand collection', function (s) {
         t.equal(optionNodes[4].disabled, true);
     }));
 
+    s.test('removes el from parent when remove is invoked', sync(function (t) {
+        t.plan(1);
+
+        var el = {
+            parentNode: {
+                removeChild: function (el) {
+                    t.equal(el, view.el);
+                }
+            },
+            removeEventListener: function() {}
+        };
+
+        view = new SelectView({
+            name: 'num',
+            options: arr
+        });
+        view.el = el;
+
+        view.remove();
+    }));
+
+    s.test('does not explode when el has no parent and remove is invoked', sync(function (t) {
+        view = new SelectView({
+            name: 'num',
+            options: arr
+        });
+
+        t.equal(view.el.parentNode, null);
+
+        view.remove();
+    }));
+
 });

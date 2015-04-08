@@ -175,7 +175,7 @@ SelectView.prototype.updateSelectedOption = function () {
 };
 
 SelectView.prototype.remove = function () {
-    if (this.el) this.el.parentNode.removeChild(this.el);
+    if (this.el && this.el.parentNode) this.el.parentNode.removeChild(this.el);
     this.el.removeEventListener('change', this.onChange, false);
 };
 

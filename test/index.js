@@ -68,6 +68,24 @@ suite('Setup', function (s) {
         t.ok(view.el.querySelector('select'));
     }));
 
+    s.test('empty option-set', sync(function (t) {
+        view = new SelectView({
+            name: 'num',
+            options: [],
+            required: false,
+        });
+
+        t.ok(view.valid, 'empty, non-required option set valid');
+
+        view = new SelectView({
+            name: 'num',
+            options: [],
+            required: true,
+        });
+
+        t.notOk(view.valid, 'empty, non-required option set valid');
+    }));
+
     s.test('renders label text', sync(function (t) {
         var labelText = view.el.querySelector('[data-hook~=label]').textContent;
         t.equal(labelText, 'Choose a word');
@@ -791,25 +809,22 @@ suite('With ampersand collection', function (s) {
     }));
 
     s.test('removes el from parent when remove is invoked', sync(function (t) {
-        t.plan(1);
+        t.plan(2);
 
-        var el = {
-            parentNode: {
-                removeChild: function (el) {
-                    t.equal(el, view.el);
-                }
-            },
-            removeEventListener: function() {}
-        };
+        var parent = document.createElement('div');
+        var el = document.createElement('div');
+        parent.appendChild(el);
 
         view = new SelectView({
             autoRender: true,
+            el: el,
             name: 'num',
             options: arr
         });
-        view.el = el;
 
+        t.equal(parent.childNodes[0], el, 'parentNode contains view el');
         view.remove();
+        t.equal(parent.childNodes[0], undefined, 'view el removed via remove()');
     }));
 
     s.test('does not fail when el has no parent and remove is invoked', sync(function (t) {

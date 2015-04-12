@@ -2,7 +2,6 @@
 var domify = require('domify');
 var dom = require('ampersand-dom');
 var matches = require('matches-selector');
-var isArray = require('amp-is-array');
 
 //Replaceable with anything with label, message-container, message-text data-hooks and a <select>
 var defaultTemplate = [
@@ -42,7 +41,6 @@ function SelectView (opts) {
     this.startingValue = opts.value;
     this.yieldModel = (opts.yieldModel === false) ? false : true;
 
-    if(opts.beforeSubmit) this.beforeSubmit = opts.beforeSubmit;
     this.eagerValidate = opts.eagerValidate;
     this.required = opts.required || false;
     this.validClass = opts.validClass || 'input-valid';
@@ -53,7 +51,11 @@ function SelectView (opts) {
 
     this.startingValue = this.setValue(opts.value, this.eagerValidate ? false : true, true);
 
-    this.render();
+    if (opts.beforeSubmit) this.beforeSubmit = opts.beforeSubmit;
+    if (opts.autoRender) {
+        this.autoRender = opts.autoRender;
+        this.render();
+    }
 }
 
 SelectView.prototype.render = function () {
@@ -165,7 +167,7 @@ SelectView.prototype.updateSelectedOption = function () {
     var lookupValue = this.value;
 
     if (lookupValue === null || lookupValue === undefined || lookupValue === '') {
-        if (this.unselectedText) {
+        if (this.unselectedText || (!this.startingValue && !this.rendered)) {
             this.select.selectedIndex = 0;
             return this;
         } else if (!this.options.length && this.value === null) {
@@ -238,7 +240,7 @@ SelectView.prototype.setValue = function (value, skipValidationMessage, init) {
                 model = this.options.models[0];
                 this.value = this.yieldModel ? model : model[this.idAttribute];
             } else {
-                if (isArray(this.options[0])) {
+                if (Array.isArray(this.options[0])) {
                     this.value = this.options[0][0];
                 } else {
                     this.value = this.options[0];
@@ -248,7 +250,7 @@ SelectView.prototype.setValue = function (value, skipValidationMessage, init) {
     } else {
         // Ensure corresponding option exists before assigning value
         option = this.getOptionByValue(value);
-        this.value = isArray(option) ? option[0] : option;
+        this.value = Array.isArray(option) ? option[0] : option;
     }
     this.validate(skipValidationMessage);
     if (this.select) this.updateSelectedOption();
@@ -281,7 +283,7 @@ SelectView.prototype.validate = function (skipValidationMessage) {
  * @return {SelectView} this
  */
 SelectView.prototype.beforeSubmit = function () {
-    this.setValue(this.select.options[this.select.selectedIndex].value);
+    if (this.select) this.setValue(this.select.options[this.select.selectedIndex].value);
 };
 
 /**
@@ -297,10 +299,10 @@ SelectView.prototype.getOptionByValue = function(value) {
         else model = value;
         if (!model) throw new Error('model or model idAttribute not found in options collection');
         return this.yieldModel ? model : model[this.idAttribute];
-    } else if (isArray(this.options)) {
+    } else if (Array.isArray(this.options)) {
         // find value value in options array
         // find option, formatted [['val', 'text'], ...]
-        if (this.options.length && isArray(this.options[0])) {
+        if (this.options.length && Array.isArray(this.options[0])) {
             for (var i = this.options.length - 1; i >= 0; i--) {
                 if (this.options[i][0] == value) return this.options[i];
             }

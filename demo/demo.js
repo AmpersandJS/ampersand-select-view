@@ -28,7 +28,7 @@ var BaseView = FormView.extend({
                 idAttribute: 'id',
                 textAttribute: 'title',
                 required: true,
-                unselectedText: 'show validation stuff when im selected after initial'
+                unselectedText: 'show validation text after initial interaction'
         });
 
         var requiredInvalidEager = window.requiredInvalidEager = new SelectView({
@@ -39,7 +39,7 @@ var BaseView = FormView.extend({
                 textAttribute: 'title',
                 required: true,
                 eagerValidate: true,
-                unselectedText: 'show validation stuff when im selected no matter what'
+                unselectedText: 'show validation text immediately'
         });
 
         return [

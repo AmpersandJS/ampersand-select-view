@@ -60,7 +60,7 @@ If using a collection to produce `<select>` `<option>`s, the following may also 
 - `[textAttribute]`: model attribute to use as the text of the option node in the select box
 - `[yieldModel]`: [default: `true`] if options is a collection, yields the full model rather than just its `idAttribute` to `.value`
 
-When the collection changes, the view will try and maintain its currently `.value`.  If the corresponding model is removed, the <select> control will default to the 0th index <option> and update its value accordingly.
+When the collection changes, the view will try and maintain its currently `.value`.  If the corresponding model is removed, the &lt;select&gt; control will default to the 0th index &lt;option&gt; and update its value accordingly.
 
 ## custom template
 You may override the default template by providing your own template string to the [constructor](#constructor---function-new-selectviewoptions) options hash.  Technically, all you must provided is a `<select>` element.  However, your template may include the following under a single root element:

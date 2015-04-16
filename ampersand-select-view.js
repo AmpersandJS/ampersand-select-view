@@ -47,7 +47,11 @@ module.exports = View.extend({
         }
 
         this.el = opts.el;
-        this.label = opts.label || this.name; // init as string. render() mutates into DOM el with .textContent equal to this value
+        if (opts.label === undefined) {
+            this.label = this.name;
+        } else {
+            this.label = opts.label;
+        }
         this.parent = opts.parent || this.parent;
         this.template = opts.template || defaultTemplate;
         this.unselectedText = opts.unselectedText;
@@ -58,7 +62,11 @@ module.exports = View.extend({
         this.required = opts.required || false;
         this.validClass = opts.validClass || 'input-valid';
         this.invalidClass = opts.invalidClass || 'input-invalid';
-        this.requiredMessage = opts.requiredMessage || 'Selection required';
+        if (opts.requiredMessage === undefined) {
+            this.requiredMessage = 'Selection required';
+        } else {
+            this.requiredMessage = opts.requiredMessage;
+        }
 
         this.onChange = this.onChange.bind(this);
 

@@ -35,6 +35,7 @@ Sets the selected option to that which matches the provided value.  Updates the 
 ### constructor - [Function] `new SelectView([options])`
 #### options
 ##### general options
+- `autoRender`: [default: `false`] generally, we leave rendering of this FieldView to its controlling form
 - `name`: the `<select>`'s `name` attribute's value. Used when reporting to parent form
 - `parent`: parent form reference
 - `options`: array/collection of options to render into the select box
@@ -145,14 +146,16 @@ module.exports = FormView.extend({
 
 ## changelog
 
+- 4.0.0
+    - Extend [ampersand-view](https://github.com/ampersandjs/ampersand-view) and support `autoRender`, where previously this view would autoRender unconditionally
 - 3.0.0
-1. Improve general option edge cases, and add supporting test cases.  Primarily targets falsy option value handling.
-1. Validate immediately to assist when parent FormView tests onload for field validity.  Update `skipValidation` to `skipValidationMessage`, permit immediate validation, but conditionally display messages.
-1. Throw an `Error` when trying to `setValue(value)` and an option *matching the requested `value`* does not exist.  The exception to this is when the provided value is `null`, `undefined`, or `''`, and a `null` option value exists.  Because the DOM can only recognize a single empty value for any <option>, which is the empty string `''`, only a single empty-ish option can only be supported by the view.
-1. Support `0` value options, both in Model id's and array values.
-1. Add `eagerValidate`.
-1. Denote a plan for 4.x release
-1. bulk update README, and some cody tidying
+    - Improve general option edge cases, and add supporting test cases.  Primarily targets falsy option value handling.
+    - Validate immediately to assist when parent FormView tests onload for field validity.  Update `skipValidation` to `skipValidationMessage`, permit immediate validation, but conditionally display messages.
+    - Throw an `Error` when trying to `setValue(value)` and an option *matching the requested `value`* does not exist.  The exception to this is when the provided value is `null`, `undefined`, or `''`, and a `null` option value exists.  Because the DOM can only recognize a single empty value for any <option>, which is the empty string `''`, only a single empty-ish option can only be supported by the view.
+    - Support `0` value options, both in Model id's and array values.
+    - Add `eagerValidate`.
+    - Denote a plan for 4.x release
+    - bulk update README, and some cody tidying
 
 ## credits
 

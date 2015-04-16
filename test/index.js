@@ -58,7 +58,8 @@ suite('Setup', function (s) {
         fieldOptions = {
             name: 'word',
             label: 'Choose a word',
-            options: ['foo', 'bar', 'baz']
+            options: ['foo', 'bar', 'baz'],
+            autoRender: true
         };
         view = new SelectView(fieldOptions);
     });
@@ -67,13 +68,35 @@ suite('Setup', function (s) {
         t.ok(view.el.querySelector('select'));
     }));
 
+    s.test('empty option-set', sync(function (t) {
+        view = new SelectView({
+            name: 'num',
+            options: [],
+            required: false,
+        });
+
+        t.ok(view.valid, 'empty, non-required option set valid');
+
+        view = new SelectView({
+            name: 'num',
+            options: [],
+            required: true,
+        });
+
+        t.notOk(view.valid, 'empty, non-required option set valid');
+    }));
+
     s.test('renders label text', sync(function (t) {
         var labelText = view.el.querySelector('[data-hook~=label]').textContent;
         t.equal(labelText, 'Choose a word');
     }));
 
     s.test('label text falls back to name', sync(function (t) {
-        view = new SelectView({ name: 'word', options: [] });
+        view = new SelectView({
+            name: 'word',
+            options: [],
+            autoRender: true
+        });
         var labelText = view.el.querySelector('[data-hook~=label]').textContent;
         t.equal(labelText, 'word');
     }));
@@ -84,17 +107,23 @@ suite('Setup', function (s) {
             template: '<select></select>',
             options: ['foo', 'bar', 'baz']
         });
+        view.render();
         t.equal(view.el.tagName, 'SELECT');
     }));
 
     s.test('set valid name on select input', sync(function (t) {
-        view = new SelectView({ name: 'word', options: [] });
+        view = new SelectView({
+            name: 'word',
+            options: [],
+            autoRender: true
+        });
         var selectName = view.el.querySelector('select').getAttribute('name');
         t.equal(selectName, 'word');
     }));
 
     s.test('message container', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'num',
             options: fieldOptions.options,
             eagerValidate: false,
@@ -105,6 +134,7 @@ suite('Setup', function (s) {
         t.ok(view.el.querySelector('[data-hook~=message-container]').style.display === 'none', 'validation message should be hidden if eagerValidate is false');
 
         view = new SelectView({
+            autoRender: true,
             name: 'num',
             options: fieldOptions.options,
             eagerValidate: true,
@@ -117,6 +147,7 @@ suite('Setup', function (s) {
 
     s.test('eagerValidation', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'num',
             options: fieldOptions.options,
             eagerValidate: true,
@@ -135,6 +166,7 @@ suite('Utility Methods', function (s) {
 
     s.test('clear', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: arr,
             value: 'two'
@@ -153,6 +185,7 @@ suite('Utility Methods', function (s) {
 
     s.test('clear on view with `unselectedText`', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: arr,
             unselectedText: 'Please choose:',
@@ -171,6 +204,7 @@ suite('Utility Methods', function (s) {
 
     s.test('clear on `required` view`', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: arr,
             value: 'two',
@@ -192,6 +226,7 @@ suite('Utility Methods', function (s) {
 
     s.test('clear on `required` view with `unselectedText`', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: arr,
             unselectedText: 'Please choose:',
@@ -211,6 +246,7 @@ suite('Utility Methods', function (s) {
 
     s.test('reset on view with initial value', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: [0, 1, 2],
             value: 0,
@@ -230,6 +266,7 @@ suite('Utility Methods', function (s) {
 
     s.test('reset on view with no initial value', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: arr
         });
@@ -247,6 +284,7 @@ suite('Utility Methods', function (s) {
     s.test('reset on view where initial value missing', sync(function (t) {
         var ops = [0, 1, 2];
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: ops,
             value: 2
@@ -291,7 +329,11 @@ suite('Options array with number items', function (s) {
     });
 
     s.test('renders the number options into the select', sync(function (t) {
-        view = new SelectView({ name: 'num', options: arr });
+        view = new SelectView({
+            autoRender: true,
+            name: 'num',
+            options: arr
+        });
 
         var optionNodes = view.el.querySelectorAll('select option');
 
@@ -316,7 +358,11 @@ suite('Options array with string items', function (s) {
     });
 
     s.test('renders the options into the select (array)', sync(function (t) {
-        view = new SelectView({ name: 'word', options: arr });
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            options: arr
+        });
 
         var optionNodes = view.el.querySelectorAll('select option');
 
@@ -334,6 +380,7 @@ suite('Options array with string items', function (s) {
 
     s.test('renders the empty item', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: arr,
             unselectedText: 'Please choose:'
@@ -351,7 +398,13 @@ suite('Options array with string items', function (s) {
     }));
 
     s.test('selects the right item (options: [\'valAndText\'])', sync(function (t) {
-        view = new SelectView({ name: 'word', options: arr, unselectedText: 'Please choose:', value: 'two' });
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            options: arr,
+            unselectedText: 'Please choose:',
+            value: 'two'
+        });
 
         var select = view.el.querySelector('select');
 
@@ -372,7 +425,13 @@ suite('Options array with string items', function (s) {
     }));
 
     s.test('options are enabled', sync(function (t) {
-        view = new SelectView({ name: 'word', options: arr, unselectedText: 'Please choose:', value: 'two' });
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            options: arr,
+            unselectedText: 'Please choose:',
+            value: 'two'
+        });
         var optionNodes = view.el.querySelectorAll('select option');
         t.equal(optionNodes[0].disabled, false);
         t.equal(optionNodes[1].disabled, false);
@@ -389,7 +448,11 @@ suite('Options array with array items', function (s) {
     });
 
     s.test('renders the arr-num options into the select', sync(function (t) {
-        view = new SelectView({ name: 'num', options: arrNum });
+        view = new SelectView({
+            autoRender: true,
+            name: 'num',
+            options: arrNum
+        });
 
         var optionNodes = view.el.querySelectorAll('select option');
 
@@ -407,7 +470,11 @@ suite('Options array with array items', function (s) {
     }));
 
     s.test('renders the arr-str options into the select', sync(function (t) {
-        view = new SelectView({ name: 'word', options: arr });
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            options: arr
+        });
 
         var optionNodes = view.el.querySelectorAll('select option');
 
@@ -425,6 +492,7 @@ suite('Options array with array items', function (s) {
 
     s.test('renders the empty item', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: arr,
             unselectedText: 'Please choose:'
@@ -442,7 +510,13 @@ suite('Options array with array items', function (s) {
     }));
 
     s.test('selects the right item (options:  [[\'val\', \'text\']])', sync(function (t) {
-        view = new SelectView({ name: 'word', options: arr, unselectedText: 'Please choose:', value: 'two' });
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            options: arr,
+            unselectedText: 'Please choose:',
+            value: 'two'
+        });
 
         var select = view.el.querySelector('select');
 
@@ -463,7 +537,11 @@ suite('Options array with array items', function (s) {
     }));
 
     s.test('renders a disabled item if a third value is passed which is truthy', sync(function (t) {
-        view = new SelectView({ name: 'word', options: arr });
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            options: arr
+        });
 
         var optionNodes = view.el.querySelectorAll('select option');
 
@@ -486,6 +564,7 @@ suite('With ampersand collection', function (s) {
 
     s.test('renders the options into the select (collection)', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: coll,
             idAttribute: 'id',
@@ -516,6 +595,7 @@ suite('With ampersand collection', function (s) {
         ]);
 
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: coll,
             idAttribute: 'id',
@@ -559,6 +639,7 @@ suite('With ampersand collection', function (s) {
 
     s.test('renders the options into the select with different id attribute (collection)', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: coll,
             idAttribute: 'someOtherKey',
@@ -577,6 +658,7 @@ suite('With ampersand collection', function (s) {
 
     s.test('renders the empty item', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: coll,
             idAttribute: 'id',
@@ -603,6 +685,7 @@ suite('With ampersand collection', function (s) {
         ]);
 
         view = new SelectView({
+            autoRender: true,
             name: 'testNullId',
             options: coll,
             idAttribute: 'id',
@@ -625,6 +708,7 @@ suite('With ampersand collection', function (s) {
 
     s.test('selects the right item by id/model (options: collection)', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: coll,
             unselectedText: 'Please choose:',
@@ -658,6 +742,7 @@ suite('With ampersand collection', function (s) {
 
     s.test('selects the right item by id/model (options: collection), with yieldModel: false', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: coll,
             unselectedText: 'Please choose:',
@@ -706,6 +791,7 @@ suite('With ampersand collection', function (s) {
         ]);
 
         view = new SelectView({
+            autoRender: true,
             name: 'word',
             options: coll,
             idAttribute: 'id',
@@ -723,28 +809,27 @@ suite('With ampersand collection', function (s) {
     }));
 
     s.test('removes el from parent when remove is invoked', sync(function (t) {
-        t.plan(1);
+        t.plan(2);
 
-        var el = {
-            parentNode: {
-                removeChild: function (el) {
-                    t.equal(el, view.el);
-                }
-            },
-            removeEventListener: function() {}
-        };
+        var parent = document.createElement('div');
+        var el = document.createElement('div');
+        parent.appendChild(el);
 
         view = new SelectView({
+            autoRender: true,
+            el: el,
             name: 'num',
             options: arr
         });
-        view.el = el;
 
+        t.equal(parent.childNodes[0], el, 'parentNode contains view el');
         view.remove();
+        t.equal(parent.childNodes[0], undefined, 'view el removed via remove()');
     }));
 
     s.test('does not fail when el has no parent and remove is invoked', sync(function (t) {
         view = new SelectView({
+            autoRender: true,
             name: 'num',
             options: arr
         });

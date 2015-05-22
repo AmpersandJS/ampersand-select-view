@@ -157,7 +157,7 @@ module.exports = View.extend({
         if (!this.select) return;
 
         this.select.innerHTML = '';
-        if (this.unselectedText) {
+        if (this.unselectedText !== undefined) {
             this.select.appendChild(
                 createOption(null, this.unselectedText)
             );
@@ -182,9 +182,8 @@ module.exports = View.extend({
      */
     updateSelectedOption: function () {
         var lookupValue = this.value;
-
         if (lookupValue === null || lookupValue === undefined || lookupValue === '') {
-            if (this.unselectedText || (!this.startingValue && !this.rendered)) {
+            if (this.unselectedText !== undefined || (!this.startingValue && !this.rendered)) {
                 this.select.selectedIndex = 0;
                 return this;
             } else if (!this.options.length && this.value === null) {
@@ -238,11 +237,14 @@ module.exports = View.extend({
     setValue: function (value, skipValidationMessage, init) {
         var option, model, nullValid;
 
+        // enforce the <select> control to contain only a singular falsy
+        // value (excluding 0), because browsers will set the select.value
+        // in each case to be the empty string
         if (value === null || value === undefined || value === '') {
             this.value = null;
 
             // test if null is a valid option
-            if (this.unselectedText) {
+            if (this.unselectedText !== undefined) {
                 nullValid = true;
             } else {
                 nullValid = this.hasOptionByValue(null);

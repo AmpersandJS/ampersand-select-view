@@ -14,9 +14,6 @@ A view module for intelligently rendering and validating selectbox input. Works 
 npm install ampersand-select-view
 ```
 
-## 4.0.0 Release Plan
-The upcoming release 4.x is intended to migrate `ampersand-select-view` to an extension of `ampersand-view`.  Due to the refactor, merging changes becomes difficult as the module will exhibit a different structure. As such, *all PRs*, including bugfixes, should be submitted by April 20, 2015!
-
 <!-- starthide -->
 Part of the [Ampersand.js toolkit](http://ampersandjs.com) for building clientside applications.
 <!-- endhide -->

@@ -271,7 +271,7 @@ module.exports = View.extend({
         }
         this.validate(skipValidationMessage);
         if (this.select) this.updateSelectedOption();
-        if (this.parent) this.parent.update(this);
+        if (this.parent && typeof this.parent.update === 'function') this.parent.update(this);
         return this.value;
     },
 

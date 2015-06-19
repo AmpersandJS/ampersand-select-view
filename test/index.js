@@ -438,6 +438,26 @@ suite('Options array with string items', function (s) {
         t.equal(optionNodes[2].disabled, false);
     }));
 
+    s.test('options with empty string unselectedText', sync(function (t) {
+        view = new SelectView({
+            autoRender: true,
+            name: 'emptyUnselectedTest',
+            options: arr,
+            unselectedText: '',
+            required: true,
+            requiredMessage: 'emptyUnselectedTest'
+        });
+        var select = view.el.querySelector('select');
+        t.equal(select.options[select.selectedIndex].innerHTML, '', 'rendered unselectedText is `\'\'`');
+        view.beforeSubmit();
+        var msgText = view.queryByHook('message-text').innerHTML;
+        t.equal(
+            msgText,
+            'emptyUnselectedTest',
+            'required value <select> w/ empty unselectedText prompts submit validation'
+        );
+    }));
+
 });
 
 suite('Options array with array items', function (s) {

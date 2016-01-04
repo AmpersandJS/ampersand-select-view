@@ -150,7 +150,7 @@ module.exports = View.extend({
     },
 
     bindDOMEvents: function () {
-        this.el.addEventListener('change', this.onChange, false);
+        this.select.addEventListener('change', this.onChange, false);
     },
 
     renderOptions: function () {

@@ -142,7 +142,8 @@ module.exports = FormView.extend({
 [![testling badge](https://ci.testling.com/AmpersandJS/ampersand-select-view.png)](https://ci.testling.com/AmpersandJS/ampersand-select-view)
 
 ## changelog
-
+- 5.0.0
+    - Change events now always get triggered on the select element instead of blindly calling on the root element.
 - 4.0.0
     - Extend [ampersand-view](https://github.com/ampersandjs/ampersand-view) and support `autoRender`, where previously this view would autoRender unconditionally
 - 3.0.0

@@ -47,9 +47,7 @@ module.exports = View.extend({
         }
 
         this.el = opts.el;
-        if (opts.label === undefined) {
-            this.label = this.name;
-        } else {
+        if (opts.label !== undefined) {
             this.label = opts.label;
         }
         this.parent = opts.parent || this.parent;

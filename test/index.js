@@ -91,14 +91,14 @@ suite('Setup', function (s) {
         t.equal(labelText, 'Choose a word');
     }));
 
-    s.test('label text falls back to name', sync(function (t) {
+    s.test('label text defaults to empty', sync(function (t) {
         view = new SelectView({
             name: 'word',
             options: [],
             autoRender: true
         });
         var labelText = view.el.querySelector('[data-hook~=label]').textContent;
-        t.equal(labelText, 'word');
+        t.equal(labelText, '');
     }));
 
     s.test('works with just <select></select>', sync(function (t) {

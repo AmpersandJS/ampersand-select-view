@@ -18,18 +18,13 @@
     "ampersand-form-view": "^3.1.0",
     "ampersand-state": "^4.4.5",
     "ampersand-view-conventions": "^1.1.1",
-    "browserify": "^9.0.3",
     "function-bind": "^1.0.2",
-    "jshint": "^2.5.1",
-    "phantomjs": "^1.9.7-15",
-    "precommit-hook": "^1.0.2",
-    "run-browser": "^2.0.2",
-    "tap-spec": "^2.2.1",
-    "tape": "^3.5.0",
-    "tape-run": "^0.3.0",
-    "tape-suite": "^0.2.0",
-    "testem": "^0.7.6",
-    "zuul": "^1.19.0"
+    "jshint": "^2.9.1",
+    "phantomjs": "^1.9.19",
+    "precommit-hook": "^3.0.0",
+    "tape": "^4.4.0",
+    "tape-suite": "^0.2.1",
+    "zuul": "^3.9.0"
   },
   "directories": {
     "test": "test"
@@ -50,32 +45,23 @@
   "scripts": {
     "test": "zuul --phantom -- test/index.js",
     "test-ci": "zuul -- test/index.js",
-    "start": "run-browser test/*",
+    "start": "zuul --local -- test/main.js",
     "demo": "beefy demo/demo.js:demo.js --cwd demo",
     "preversion": "git checkout master && git pull && npm ls",
     "publish-patch": "npm run preversion && npm version patch && git push origin master --tags && npm publish",
     "publish-minor": "npm run preversion && npm version minor && git push origin master --tags && npm publish",
-    "publish-major": "npm run preversion && npm version major && git push origin master --tags && npm publish"
-  },
-  "testling": {
-    "files": "test/*.js",
-    "browsers": [
-      "ie/8..latest",
-      "firefox/17..latest",
-      "firefox/nightly",
-      "chrome/22..latest",
-      "chrome/canary",
-      "opera/12..latest",
-      "opera/next",
-      "safari/5.1..latest",
-      "ipad/6.0..latest",
-      "iphone/6.0..latest",
-      "android-browser/4.2..latest"
-    ]
+    "publish-major": "npm run preversion && npm version major && git push origin master --tags && npm publish",
+    "lint": "jshint .",
+    "validate": "npm ls"
   },
   "browserify": {
     "transform": [
       "ampersand-version"
     ]
-  }
+  },
+  "pre-commit": [
+    "lint",
+    "validate",
+    "test"
+  ]
 }

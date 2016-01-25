@@ -47,9 +47,7 @@ module.exports = View.extend({
         }
 
         this.el = opts.el;
-        if (opts.label !== undefined) {
-            this.label = opts.label;
-        }
+        this.label = opts.label || '';
         this.parent = opts.parent || this.parent;
         this.template = opts.template || defaultTemplate;
         this.unselectedText = opts.unselectedText;
@@ -84,7 +82,7 @@ module.exports = View.extend({
         else this.el.appendChild(elDom);
 
         labelEl = this.el.querySelector('[data-hook~=label]');
-        if (labelEl && this.label !== undefined) {
+        if (labelEl) {
             labelEl.textContent = this.label;
             this.label = labelEl;
         } else {

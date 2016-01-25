@@ -84,7 +84,7 @@ module.exports = View.extend({
         else this.el.appendChild(elDom);
 
         labelEl = this.el.querySelector('[data-hook~=label]');
-        if (labelEl) {
+        if (labelEl && this.label !== undefined) {
             labelEl.textContent = this.label;
             this.label = labelEl;
         } else {

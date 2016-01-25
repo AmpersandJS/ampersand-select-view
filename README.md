@@ -142,6 +142,9 @@ module.exports = FormView.extend({
 [![testling badge](https://ci.testling.com/AmpersandJS/ampersand-select-view.png)](https://ci.testling.com/AmpersandJS/ampersand-select-view)
 
 ## changelog
+- 6.0.0
+    - match field label rendering behavior to ampersand-input-view.  removes label fallback to `name` attr
+    - improve x-browser testing CI
 - 5.0.0
     - Change events now always get triggered on the select element instead of blindly calling on the root element.
 - 4.0.0
@@ -165,4 +168,3 @@ Due to CI browser testing issues ([1](https://support.saucelabs.com/entries/2561
 ## license
 
 MIT
-

@@ -28,12 +28,36 @@ var createOption = function(value, text, disabled) {
     return node;
 };
 
+var createOptgroup = function(text) {
+    var node = document.createElement('optgroup');
+    node.label = text;
+
+    return node;
+};
+
 module.exports = View.extend({
     initialize: function(opts) {
         opts = opts || {};
 
         if (typeof opts.name !== 'string') throw new Error('SelectView requires a name property.');
         this.name = opts.name;
+
+        if (opts.groupOptions) {
+            if (opts.options) {
+                console.warn("Warning: as ampersand-select-view was provided both options and groupOptions properties, option will be overwritten with values from groupOptions.");
+            }
+            // Create the options array from the groupOptions property, containing
+            // only the values that will result in an <option> element
+            this.groupOptions = opts.groupOptions;
+            opts.options = [];
+
+            opts.groupOptions.forEach(function (optgroup) {
+                optgroup.options.forEach(function (option) {
+                    opts.options.push(option);
+                }.bind(this));
+            }.bind(this));
+        }
+        console.log(opts.options);
 
         if (!Array.isArray(opts.options) && !opts.options.isCollection) {
             throw new Error('SelectView requires select options.');
@@ -159,15 +183,36 @@ module.exports = View.extend({
             );
         }
 
-        this.options.forEach(function (option) {
-            this.select.appendChild(
-                createOption(
-                    this.getOptionValue(option),
-                    this.getOptionText(option),
-                    this.getOptionDisabled(option)
-                )
-            );
-        }.bind(this));
+        if (this.groupOptions) {
+            this.groupOptions.forEach(function (optgroup) {
+                // this.groupOptions is an array of Objects representing <optgroup> elements
+                var optGroupElement = createOptgroup(optgroup.groupname);
+                // Loop over the <options> from that <optgroup>
+                optgroup.options.forEach(function (option) {
+                   // Add the <option>s to the <optgroup>
+                   optGroupElement.appendChild(
+                       createOption(
+                           this.getOptionValue(option),
+                           this.getOptionText(option),
+                           this.getOptionDisabled(option)
+                       )
+                   );
+                }.bind(this));
+                // Add the <optgroup> to the <select>
+                this.select.appendChild(optGroupElement);
+            }.bind(this));
+        } else {
+            this.options.forEach(function (option) {
+                // Create and add the <option> to the <select>
+                this.select.appendChild(
+                    createOption(
+                        this.getOptionValue(option),
+                        this.getOptionText(option),
+                        this.getOptionDisabled(option)
+                    )
+                );
+            }.bind(this));
+        }
     },
 
     /**

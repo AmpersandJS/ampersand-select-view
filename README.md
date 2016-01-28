@@ -108,6 +108,23 @@ module.exports = FormView.extend({
                 options: [ ['a', 'Option A'], ['b', 'Option B'], ['c', 'Option C', true] ]
             }),
             new SelectView({
+                name: 'option',
+                parent: this,
+                // define groupOptions to generate <optgroup> elements. Pass it an array of
+                // Objects, each object will become an <optgroup> with groupname being the
+                // <optgroup>'s name and options being an array (either of strings or array, see
+                // previous two examples) that will become the <option>s under that <optgroup>
+                groupOptions: [ {
+                                  groupname: "Options 1",
+                                  options: [ ['1', 'Option 1'], ['2', 'Option 2'], ['3', 'Option 3', true] ]
+                                },
+                                {
+                                  groupname: "Options 2",
+                                  options: [ ['a', 'Option A'], ['b', 'Option B'], ['c', 'Option C', true] ]
+                                }
+                              ],
+            }),
+            new SelectView({
                 name: 'model',
                 parent: this,
                 // you can pass in a collection here too
@@ -143,8 +160,9 @@ module.exports = FormView.extend({
 
 ## changelog
 - 6.0.0
-    - match field label rendering behavior to ampersand-input-view.  removes label fallback to `name` attr
-    - improve x-browser testing CI
+    - Match field label rendering behavior to ampersand-input-view.  removes label fallback to `name` attr
+    - Generate <optgroup> elements by passing the new `options.groupOptions` parameter
+    - Improve x-browser testing CI
 - 5.0.0
     - Change events now always get triggered on the select element instead of blindly calling on the root element.
 - 4.0.0

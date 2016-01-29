@@ -577,7 +577,7 @@ suite('groupOptions to generate <optgroup> elements, with string items', functio
         view = null;
     });
 
-    s.test('groupOptions - renders the options into the select (array)', sync(function (t) {
+    s.test('groupOptions - string - renders the options into the select (array)', sync(function (t) {
         view = new SelectView({
             autoRender: true,
             name: 'word',
@@ -601,7 +601,7 @@ suite('groupOptions to generate <optgroup> elements, with string items', functio
         t.equal(optionNodes[3].textContent, 'Option 2.2');
     }));
 
-    s.test('groupOptions - renders the empty item', sync(function (t) {
+    s.test('groupOptions - string - renders the empty item', sync(function (t) {
         view = new SelectView({
             autoRender: true,
             name: 'word',
@@ -620,7 +620,7 @@ suite('groupOptions to generate <optgroup> elements, with string items', functio
         t.equal(optionNodes[1].textContent, 'Option 1.1');
     }));
 
-    s.test('groupOptions - selects the right item (options: [\'valAndText\'])', sync(function (t) {
+    s.test('groupOptions - string - selects the right item (options: [\'valAndText\'])', sync(function (t) {
         view = new SelectView({
             autoRender: true,
             name: 'word',
@@ -647,7 +647,7 @@ suite('groupOptions to generate <optgroup> elements, with string items', functio
         }
     }));
 
-    s.test('groupOptions - options are enabled', sync(function (t) {
+    s.test('groupOptions - string - options are enabled', sync(function (t) {
         view = new SelectView({
             autoRender: true,
             name: 'word',
@@ -662,7 +662,7 @@ suite('groupOptions to generate <optgroup> elements, with string items', functio
         t.equal(optionNodes[3].disabled, false);
     }));
 
-    s.test('groupOptions - options with empty string unselectedText', sync(function (t) {
+    s.test('groupOptions - string - options with empty string unselectedText', sync(function (t) {
         view = new SelectView({
             autoRender: true,
             name: 'emptyUnselectedTest',
@@ -682,6 +682,157 @@ suite('groupOptions to generate <optgroup> elements, with string items', functio
         );
     }));
 
+});
+
+suite('groupOptions to generate <optgroup> elements, with array items', function (s) {
+    s.beforeEach(function() {
+        arr = [ {
+                  groupName: 'Options 1',
+                  options: [ ['one', 'Option One'], ['two', 'Option Two', false], ['three', 'Option Three', true] ]
+                },
+                {
+                  groupName: 'Options 2',
+                  options: [ ['a', 'Option A'], ['b', 'Option B', false], ['c', 'Option C', true] ]
+                }
+              ];
+        arrNum = [ {
+                     groupName: 'Options 1',
+                     options: [ [0, 'Option Zero'], [1, 1, false], [1.5, 1.5, true] ]
+                   },
+                   {
+                     groupName: 'Options 2',
+                     options: [ ['a', 'Option A'], ['b', 'Option B', false], ['c', 'Option C', true] ]
+                   }
+                 ];
+        view = null;
+    });
+
+    s.test('groupOptions - array - renders the arr-num options into the select', sync(function (t) {
+        view = new SelectView({
+            autoRender: true,
+            name: 'num',
+            groupOptions: arrNum
+        });
+
+        var optionNodes = view.el.querySelectorAll('select option');
+
+        t.equal(optionNodes.length, 6);
+
+        t.equal(optionNodes[0].value, '0');
+        t.equal(optionNodes[0].textContent, 'Option Zero');
+
+        t.equal(optionNodes[1].value, '1');
+        t.equal(optionNodes[1].textContent, '1');
+
+        t.equal(optionNodes[2].value, '1.5');
+        t.equal(optionNodes[2].textContent, '1.5');
+        t.ok(optionNodes[2].disabled, true);
+
+        t.equal(optionNodes[3].value, 'a');
+        t.equal(optionNodes[3].textContent, 'Option A');
+
+        t.equal(optionNodes[4].value, 'b');
+        t.equal(optionNodes[4].textContent, 'Option B');
+
+        t.equal(optionNodes[5].value, 'c');
+        t.equal(optionNodes[5].textContent, 'Option C');
+        t.ok(optionNodes[5].disabled, true);
+    }));
+
+    s.test('groupOptions - array - renders the arr-str options into the select', sync(function (t) {
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            groupOptions: arr
+        });
+
+        var optionNodes = view.el.querySelectorAll('select option');
+
+        t.equal(optionNodes.length, 6);
+
+        t.equal(optionNodes[0].value, 'one');
+        t.equal(optionNodes[0].textContent, 'Option One');
+
+        t.equal(optionNodes[1].value, 'two');
+        t.equal(optionNodes[1].textContent, 'Option Two');
+
+        t.equal(optionNodes[2].value, 'three');
+        t.equal(optionNodes[2].textContent, 'Option Three');
+        t.ok(optionNodes[2].disabled, true);
+
+        t.equal(optionNodes[3].value, 'a');
+        t.equal(optionNodes[3].textContent, 'Option A');
+
+        t.equal(optionNodes[4].value, 'b');
+        t.equal(optionNodes[4].textContent, 'Option B');
+
+        t.equal(optionNodes[5].value, 'c');
+        t.equal(optionNodes[5].textContent, 'Option C');
+        t.ok(optionNodes[5].disabled, true);
+    }));
+
+    s.test('groupOptions - array - renders the empty item', sync(function (t) {
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            groupOptions: arr,
+            unselectedText: 'Please choose:'
+        });
+
+        var optionNodes = view.el.querySelectorAll('select option');
+
+        t.equal(optionNodes.length, 7);
+
+        t.equal(optionNodes[0].value, '', 'First option value should be empty string.');
+        t.equal(optionNodes[0].innerHTML, 'Please choose:', 'First option should have unselectedText');
+
+        t.equal(optionNodes[1].value, 'one');
+        t.equal(optionNodes[1].textContent, 'Option One');
+    }));
+
+    s.test('groupOptions - array - selects the right item (options:  [[\'val\', \'text\']])', sync(function (t) {
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            groupOptions: arr,
+            unselectedText: 'Please choose:',
+            value: 'two'
+        });
+
+        var select = view.el.querySelector('select');
+
+        t.equal(select.options[select.selectedIndex].value, 'two');
+
+        view.setValue(undefined);
+        t.equal(select.options[select.selectedIndex].innerHTML, 'Please choose:');
+
+        view.setValue('one');
+        t.equal(select.options[select.selectedIndex].value, 'one');
+
+        try {
+            view.setValue('totes-wrong');
+            t.ok(false, 'unable to set invalid option');
+        } catch(err) {
+            t.ok('unable to set invalid option');
+        }
+    }));
+
+    s.test('groupOptions - array - renders a disabled item if a third value is passed which is truthy', sync(function (t) {
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            groupOptions: arr,
+        });
+
+        var optionNodes = view.el.querySelectorAll('select option');
+
+        t.equal(optionNodes[0].disabled, false);
+        t.equal(optionNodes[1].disabled, false);
+        t.equal(optionNodes[2].disabled, true);
+        t.equal(optionNodes[3].disabled, false);
+        t.equal(optionNodes[4].disabled, false);
+        t.equal(optionNodes[5].disabled, true);
+    }));
 });
 
 suite('With ampersand collection', function (s) {

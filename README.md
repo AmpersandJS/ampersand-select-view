@@ -36,6 +36,7 @@ Sets the selected option to that which matches the provided value.  Updates the 
 - `name`: the `<select>`'s `name` attribute's value. Used when reporting to parent form
 - `parent`: parent form reference
 - `options`: array/collection of options to render into the select box
+- `[groupOptions]`: use instead of `options` to generate <optgroup> elements within your <select>. If this is set, any values passed in `options` will be ignored and replaced with values coming from `groupOptions`.
 - `[el]`: element if you want to render the view into
 - `[template]`: a custom template to use (see 'template' section, below, for more)
 - `[required]`: [default: `false`] field required

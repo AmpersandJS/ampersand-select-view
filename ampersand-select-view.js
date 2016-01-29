@@ -57,7 +57,6 @@ module.exports = View.extend({
                 }.bind(this));
             }.bind(this));
         }
-        console.log(opts.options);
 
         if (!Array.isArray(opts.options) && !opts.options.isCollection) {
             throw new Error('SelectView requires select options.');

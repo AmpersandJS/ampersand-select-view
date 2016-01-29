@@ -571,6 +571,119 @@ suite('Options array with array items', function (s) {
     }));
 });
 
+suite('groupOptions to generate <optgroup> elements, with string items', function (s) {
+    s.beforeEach(function () {
+        arr = [ {groupName: 'Options 1', options: ['Option 1.1', 'Option 1.2'] }, {groupName: 'Options 2', options: ['Option 2.1', 'Option 2.2'] } ];
+        view = null;
+    });
+
+    s.test('groupOptions - renders the options into the select (array)', sync(function (t) {
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            groupOptions: arr
+        });
+
+        var optionNodes = view.el.querySelectorAll('select option');
+
+        t.equal(optionNodes.length, 4);
+
+        t.equal(optionNodes[0].value, 'Option 1.1');
+        t.equal(optionNodes[0].textContent, 'Option 1.1');
+
+        t.equal(optionNodes[1].value, 'Option 1.2');
+        t.equal(optionNodes[1].textContent, 'Option 1.2');
+
+        t.equal(optionNodes[2].value, 'Option 2.1');
+        t.equal(optionNodes[2].textContent, 'Option 2.1');
+
+        t.equal(optionNodes[3].value, 'Option 2.2');
+        t.equal(optionNodes[3].textContent, 'Option 2.2');
+    }));
+
+    s.test('groupOptions - renders the empty item', sync(function (t) {
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            groupOptions: arr,
+            unselectedText: 'Please choose:'
+        });
+
+        var optionNodes = view.el.querySelectorAll('select option');
+
+        t.equal(optionNodes.length, 5);
+
+        t.equal(optionNodes[0].value, '', 'First option value should be empty string.');
+        t.equal(optionNodes[0].innerHTML, 'Please choose:', 'First option should have unselectedText');
+
+        t.equal(optionNodes[1].value, 'Option 1.1');
+        t.equal(optionNodes[1].textContent, 'Option 1.1');
+    }));
+
+    s.test('groupOptions - selects the right item (options: [\'valAndText\'])', sync(function (t) {
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            groupOptions: arr,
+            unselectedText: 'Please choose:',
+            value: 'Option 1.2'
+        });
+
+        var select = view.el.querySelector('select');
+
+        t.equal(select.options[select.selectedIndex].value, 'Option 1.2');
+
+        view.setValue(undefined);
+        t.equal(select.options[select.selectedIndex].innerHTML, 'Please choose:');
+
+        view.setValue('Option 1.1');
+        t.equal(select.options[select.selectedIndex].value, 'Option 1.1');
+
+        try {
+            view.setValue('invalid-option');
+            t.ok(false, 'unable to set invalid option');
+        } catch (err) {
+            t.ok(true, 'unable to set invalid option');
+        }
+    }));
+
+    s.test('groupOptions - options are enabled', sync(function (t) {
+        view = new SelectView({
+            autoRender: true,
+            name: 'word',
+            groupOptions: arr,
+            unselectedText: 'Please choose:',
+            value: 'Option 1.2'
+        });
+        var optionNodes = view.el.querySelectorAll('select option');
+        t.equal(optionNodes[0].disabled, false);
+        t.equal(optionNodes[1].disabled, false);
+        t.equal(optionNodes[2].disabled, false);
+        t.equal(optionNodes[3].disabled, false);
+    }));
+
+    s.test('groupOptions - options with empty string unselectedText', sync(function (t) {
+        view = new SelectView({
+            autoRender: true,
+            name: 'emptyUnselectedTest',
+            groupOptions: arr,
+            unselectedText: '',
+            required: true,
+            requiredMessage: 'emptyUnselectedTest'
+        });
+        var select = view.el.querySelector('select');
+        t.equal(select.options[select.selectedIndex].innerHTML, '', 'rendered unselectedText is `\'\'`');
+        view.beforeSubmit();
+        var msgText = view.queryByHook('message-text').innerHTML;
+        t.equal(
+            msgText,
+            'emptyUnselectedTest',
+            'required value <select> w/ empty unselectedText prompts submit validation'
+        );
+    }));
+
+});
+
 suite('With ampersand collection', function (s) {
     s.beforeEach(function() {
         view = null;

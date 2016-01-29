@@ -185,7 +185,7 @@ module.exports = View.extend({
         if (this.groupOptions) {
             this.groupOptions.forEach(function (optgroup) {
                 // this.groupOptions is an array of Objects representing <optgroup> elements
-                var optGroupElement = createOptgroup(optgroup.groupname);
+                var optGroupElement = createOptgroup(optgroup.groupName);
                 // Loop over the <options> from that <optgroup>
                 optgroup.options.forEach(function (option) {
                    // Add the <option>s to the <optgroup>

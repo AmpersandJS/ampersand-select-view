@@ -111,15 +111,15 @@ module.exports = FormView.extend({
                 name: 'option',
                 parent: this,
                 // define groupOptions to generate <optgroup> elements. Pass it an array of
-                // Objects, each object will become an <optgroup> with groupname being the
+                // Objects, each object will become an <optgroup> with groupName being the
                 // <optgroup>'s name and options being an array (either of strings or array, see
                 // previous two examples) that will become the <option>s under that <optgroup>
                 groupOptions: [ {
-                                  groupname: "Options 1",
+                                  groupName: "Options 1",
                                   options: [ ['1', 'Option 1'], ['2', 'Option 2'], ['3', 'Option 3', true] ]
                                 },
                                 {
-                                  groupname: "Options 2",
+                                  groupName: "Options 2",
                                   options: [ ['a', 'Option A'], ['b', 'Option B'], ['c', 'Option C', true] ]
                                 }
                               ],

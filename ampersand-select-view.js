@@ -44,7 +44,7 @@ module.exports = View.extend({
 
         if (opts.groupOptions) {
             if (opts.options) {
-                console.warn("Warning: as ampersand-select-view was provided both options and groupOptions properties, option will be overwritten with values from groupOptions.");
+                //console.warn('Warning: as ampersand-select-view was provided both options and groupOptions properties, option will be overwritten with values from groupOptions.');
             }
             // Create the options array from the groupOptions property, containing
             // only the values that will result in an <option> element

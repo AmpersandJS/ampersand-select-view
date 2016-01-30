@@ -38,7 +38,7 @@ var fieldOptions = {
     options: ['foo', 'bar', 'baz']
 };
 var view;
-var arr, arrNum;
+var arr, arrNum, options, groupOptions;
 var coll;
 
 viewConventions.view(suite.tape, SelectView, fieldOptions);
@@ -832,6 +832,25 @@ suite('groupOptions to generate <optgroup> elements, with array items', function
         t.equal(optionNodes[3].disabled, false);
         t.equal(optionNodes[4].disabled, false);
         t.equal(optionNodes[5].disabled, true);
+    }));
+});
+
+suite('Both options and groupOptions', function (s) {
+    s.beforeEach(function () {
+        options = ['one', 'two', 'three'];
+        groupOptions = [ {groupName: 'Options 1', options: ['Option 1.1', 'Option 1.2'] }, {groupName: 'Options 2', options: ['Option 2.1', 'Option 2.2'] } ];
+        view = null;
+    });
+
+    s.test('Error thrown when both options and groupOptions are provided', sync(function (t) {
+        t.throws(function () {
+          view = new SelectView({
+              autoRender: true,
+              name: 'word',
+              options: options,
+              groupOptions: groupOptions
+          });
+        });
     }));
 });
 

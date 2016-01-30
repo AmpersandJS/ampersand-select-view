@@ -160,9 +160,10 @@ module.exports = FormView.extend({
 [![testling badge](https://ci.testling.com/AmpersandJS/ampersand-select-view.png)](https://ci.testling.com/AmpersandJS/ampersand-select-view)
 
 ## changelog
+- 6.1.0
+    - Generate <optgroup> elements by passing the new `options.groupOptions` parameter
 - 6.0.0
     - Match field label rendering behavior to ampersand-input-view.  removes label fallback to `name` attr
-    - Generate <optgroup> elements by passing the new `options.groupOptions` parameter
     - Improve x-browser testing CI
 - 5.0.0
     - Change events now always get triggered on the select element instead of blindly calling on the root element.

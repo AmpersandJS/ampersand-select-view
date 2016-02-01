@@ -36,6 +36,7 @@ Sets the selected option to that which matches the provided value.  Updates the 
 - `name`: the `<select>`'s `name` attribute's value. Used when reporting to parent form
 - `parent`: parent form reference
 - `options`: array/collection of options to render into the select box
+- `[groupOptions]`: use instead of `options` to generate <optgroup> elements within your <select>. If this is set, any values passed in `options` will be ignored and replaced with values coming from `groupOptions`.
 - `[el]`: element if you want to render the view into
 - `[template]`: a custom template to use (see 'template' section, below, for more)
 - `[required]`: [default: `false`] field required
@@ -108,6 +109,23 @@ module.exports = FormView.extend({
                 options: [ ['a', 'Option A'], ['b', 'Option B'], ['c', 'Option C', true] ]
             }),
             new SelectView({
+                name: 'option',
+                parent: this,
+                // define groupOptions to generate <optgroup> elements. Pass it an array of
+                // Objects, each object will become an <optgroup> with groupName being the
+                // <optgroup>'s name and options being an array (either of strings or array, see
+                // previous two examples) that will become the <option>s under that <optgroup>
+                groupOptions: [ {
+                                  groupName: "Options 1",
+                                  options: [ ['1', 'Option 1'], ['2', 'Option 2'], ['3', 'Option 3', true] ]
+                                },
+                                {
+                                  groupName: "Options 2",
+                                  options: [ ['a', 'Option A'], ['b', 'Option B'], ['c', 'Option C', true] ]
+                                }
+                              ],
+            }),
+            new SelectView({
                 name: 'model',
                 parent: this,
                 // you can pass in a collection here too
@@ -142,9 +160,11 @@ module.exports = FormView.extend({
 [![testling badge](https://ci.testling.com/AmpersandJS/ampersand-select-view.png)](https://ci.testling.com/AmpersandJS/ampersand-select-view)
 
 ## changelog
+- 6.1.0
+    - Generate <optgroup> elements by passing the new `options.groupOptions` parameter
 - 6.0.0
-    - match field label rendering behavior to ampersand-input-view.  removes label fallback to `name` attr
-    - improve x-browser testing CI
+    - Match field label rendering behavior to ampersand-input-view.  removes label fallback to `name` attr
+    - Improve x-browser testing CI
 - 5.0.0
     - Change events now always get triggered on the select element instead of blindly calling on the root element.
 - 4.0.0

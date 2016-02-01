@@ -13,7 +13,6 @@ A view module for intelligently rendering and validating selectbox input. Works 
 ```
 npm install ampersand-select-view
 ```
-
 <!-- starthide -->
 Part of the [Ampersand.js toolkit](http://ampersandjs.com) for building clientside applications.
 <!-- endhide -->
@@ -32,11 +31,10 @@ Sets the selected option to that which matches the provided value.  Updates the 
 ### constructor - [Function] `new SelectView([options])`
 #### options
 ##### general options
-- `autoRender`: [default: `false`] generally, we leave rendering of this FieldView to its controlling form
 - `name`: the `<select>`'s `name` attribute's value. Used when reporting to parent form
 - `parent`: parent form reference
 - `options`: array/collection of options to render into the select box
-- `[groupOptions]`: use instead of `options` to generate <optgroup> elements within your <select>. If this is set, any values passed in `options` will be ignored and replaced with values coming from `groupOptions`.
+- `[groupOptions]`: use instead of `options` to generate &lt;optgroup&gt; elements within your &lt;select&gt;. If this is set, any values passed in `options` will be ignored and replaced with values coming from `groupOptions`.
 - `[el]`: element if you want to render the view into
 - `[template]`: a custom template to use (see 'template' section, below, for more)
 - `[required]`: [default: `false`] field required
@@ -85,7 +83,6 @@ Here's the default template for reference:
 var FormView = require('ampersand-form-view');
 var SelectView = require('ampersand-select-view');
 
-
 module.exports = FormView.extend({
     fields: function () {
         return [
@@ -115,15 +112,16 @@ module.exports = FormView.extend({
                 // Objects, each object will become an <optgroup> with groupName being the
                 // <optgroup>'s name and options being an array (either of strings or array, see
                 // previous two examples) that will become the <option>s under that <optgroup>
-                groupOptions: [ {
-                                  groupName: "Options 1",
-                                  options: [ ['1', 'Option 1'], ['2', 'Option 2'], ['3', 'Option 3', true] ]
-                                },
-                                {
-                                  groupName: "Options 2",
-                                  options: [ ['a', 'Option A'], ['b', 'Option B'], ['c', 'Option C', true] ]
-                                }
-                              ],
+                groupOptions: [
+                  {
+                    groupName: "Options 1",
+                    options: [ ['1', 'Option 1'], ['2', 'Option 2'], ['3', 'Option 3', true] ]
+                  },
+                  {
+                    groupName: "Options 2",
+                    options: [ ['a', 'Option A'], ['b', 'Option B'], ['c', 'Option C', true] ]
+                  }
+                ],
             }),
             new SelectView({
                 name: 'model',
@@ -180,10 +178,7 @@ module.exports = FormView.extend({
 
 ## credits
 
-Written by [@philip_roberts](twitter.com/philip_roberts).
-
-## contributing
-Due to CI browser testing issues ([1](https://support.saucelabs.com/entries/25614798-How-can-we-set-up-an-open-source-account-that-runs-tests-on-people-s-pull-requests-), [2](https://trello.com/c/jlx3EtvS)), a PR must receive two `+1`s from the core-team or maintainer, each with mention that x-browser tests pass in the [PR branch](https://help.github.com/articles/checking-out-pull-requests-locally/) (i.e. `testem ci`);
+Originally designed & written by [@philip_roberts](twitter.com/philip_roberts).
 
 ## license
 

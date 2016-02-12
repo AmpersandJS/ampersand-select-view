@@ -4,17 +4,6 @@ var dom = require('ampersand-dom');
 var matches = require('matches-selector');
 var View = require('ampersand-view');
 
-//Replaceable with anything with label, message-container, message-text data-hooks and a <select>
-var defaultTemplate = [
-    '<label class="select">',
-        '<span data-hook="label"></span>',
-        '<select></select>',
-        '<span data-hook="message-container" class="message message-below message-error">',
-            '<p data-hook="message-text"></p>',
-        '</span>',
-    '</label>'
-].join('\n');
-
 var createOption = function(value, text, disabled) {
     var node = document.createElement('option');
 
@@ -36,6 +25,16 @@ var createOptgroup = function(text) {
 };
 
 module.exports = View.extend({
+    //Replaceable with anything with label, message-container, message-text data-hooks and a <select>
+    template: [
+        '<label class="select">',
+            '<span data-hook="label"></span>',
+            '<select></select>',
+            '<span data-hook="message-container" class="message message-below message-error">',
+                '<p data-hook="message-text"></p>',
+            '</span>',
+        '</label>'
+    ].join('\n'),
     initialize: function(opts) {
         opts = opts || {};
 
@@ -72,7 +71,7 @@ module.exports = View.extend({
         this.el = opts.el;
         this.label = opts.label || '';
         this.parent = opts.parent || this.parent;
-        this.template = opts.template || defaultTemplate;
+        if (opts.template) this.template = opts.template;
         this.unselectedText = opts.unselectedText;
         this.startingValue = opts.value;
         this.yieldModel = (opts.yieldModel === false) ? false : true;

@@ -77,6 +77,8 @@ Here's the default template for reference:
 </label>
 ```
 
+You may `SelectView.extend({ template: ...})` to create a View definition with a more permanent default template of your liking as well.
+
 ## example
 
 ```javascript

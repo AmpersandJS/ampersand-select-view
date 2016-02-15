@@ -158,6 +158,8 @@ module.exports = FormView.extend({
 [![testling badge](https://ci.testling.com/AmpersandJS/ampersand-select-view.png)](https://ci.testling.com/AmpersandJS/ampersand-select-view)
 
 ## changelog
+- 6.2.0
+    - Support extending `template`
 - 6.1.0
     - Generate <optgroup> elements by passing the new `options.groupOptions` parameter
 - 6.0.0
@@ -174,7 +176,7 @@ module.exports = FormView.extend({
     - Support `0` value options, both in Model id's and array values.
     - Add `eagerValidate`.
     - Denote a plan for 4.x release
-    - bulk update README, and some cody tidying
+    - Bulk update README, and some cody tidying
 
 ## credits
 

@@ -10,7 +10,7 @@ var createOption = function(value, text, disabled) {
     //Set to empty-string if undefined or null, but not if 0, false, etc
     if (value === null || value === undefined) value = '';
 
-    if(disabled) node.disabled = true;
+    if (disabled) node.disabled = true;
     node.textContent = text;
     node.value = value;
 
@@ -50,8 +50,8 @@ module.exports = View.extend({
             this.groupOptions = opts.groupOptions;
             opts.options = [];
 
-            opts.groupOptions.forEach(function (optgroup) {
-                optgroup.options.forEach(function (option) {
+            opts.groupOptions.forEach(function(optgroup) {
+                optgroup.options.forEach(function(option) {
                     opts.options.push(option);
                 }.bind(this));
             }.bind(this));
@@ -76,6 +76,8 @@ module.exports = View.extend({
         this.startingValue = opts.value;
         this.yieldModel = (opts.yieldModel === false) ? false : true;
 
+        this.tabindex = opts.tabindex || '0';
+
         this.eagerValidate = opts.eagerValidate;
         this.required = opts.required || false;
         this.validClass = opts.validClass || 'input-valid';
@@ -94,7 +96,7 @@ module.exports = View.extend({
         if (opts.autoRender) this.autoRender = opts.autoRender;
     },
 
-    render: function () {
+    render: function() {
         var elDom,
             labelEl;
         if (this.rendered) return;
@@ -119,6 +121,7 @@ module.exports = View.extend({
         if (!this.select) throw new Error('no select found in template');
         if (matches(this.el, 'select')) this.select = this.el;
         if (this.select) this.select.setAttribute('name', this.name);
+        if (this.select) this.select.setAttribute('tabindex', this.tabindex);
 
         this.bindDOMEvents();
         this.renderOptions();
@@ -144,7 +147,7 @@ module.exports = View.extend({
     },
 
 
-    onChange: function () {
+    onChange: function() {
         var value = this.select.options[this.select.selectedIndex].value;
 
         if (this.options.isCollection && this.yieldModel) {
@@ -160,18 +163,18 @@ module.exports = View.extend({
      * @return {State}
      * @throws {RangeError} If model not found
      */
-    getModelForId: function (id) {
-        return this.options.filter(function (model) {
+    getModelForId: function(id) {
+        return this.options.filter(function(model) {
             // intentionally coerce for '1' == 1
             return model[this.idAttribute] == id;
         }.bind(this))[0];
     },
 
-    bindDOMEvents: function () {
+    bindDOMEvents: function() {
         this.select.addEventListener('change', this.onChange, false);
     },
 
-    renderOptions: function () {
+    renderOptions: function() {
         if (!this.select) return;
 
         this.select.innerHTML = '';
@@ -182,25 +185,25 @@ module.exports = View.extend({
         }
 
         if (this.groupOptions) {
-            this.groupOptions.forEach(function (optgroup) {
+            this.groupOptions.forEach(function(optgroup) {
                 // this.groupOptions is an array of Objects representing <optgroup> elements
                 var optGroupElement = createOptgroup(optgroup.groupName);
                 // Loop over the <options> from that <optgroup>
-                optgroup.options.forEach(function (option) {
-                   // Add the <option>s to the <optgroup>
-                   optGroupElement.appendChild(
-                       createOption(
-                           this.getOptionValue(option),
-                           this.getOptionText(option),
-                           this.getOptionDisabled(option)
-                       )
-                   );
+                optgroup.options.forEach(function(option) {
+                    // Add the <option>s to the <optgroup>
+                    optGroupElement.appendChild(
+                        createOption(
+                            this.getOptionValue(option),
+                            this.getOptionText(option),
+                            this.getOptionDisabled(option)
+                        )
+                    );
                 }.bind(this));
                 // Add the <optgroup> to the <select>
                 this.select.appendChild(optGroupElement);
             }.bind(this));
         } else {
-            this.options.forEach(function (option) {
+            this.options.forEach(function(option) {
                 // Create and add the <option> to the <select>
                 this.select.appendChild(
                     createOption(
@@ -219,7 +222,7 @@ module.exports = View.extend({
      * @return {SelectView} this
      * @throws {Error} If no option exists for this.value
      */
-    updateSelectedOption: function () {
+    updateSelectedOption: function() {
         var lookupValue = this.value;
         if (lookupValue === null || lookupValue === undefined || lookupValue === '') {
             if (this.unselectedText !== undefined || (!this.startingValue && !this.rendered)) {
@@ -249,7 +252,7 @@ module.exports = View.extend({
         throw new Error('no option exists for value: ' + lookupValue);
     },
 
-    remove: function () {
+    remove: function() {
         if (this.el && this.el.parentNode) this.el.parentNode.removeChild(this.el);
         this.el.removeEventListener('change', this.onChange, false);
     },
@@ -273,7 +276,7 @@ module.exports = View.extend({
         return this.setValue(this.startingValue, true);
     },
 
-    setValue: function (value, skipValidationMessage, init) {
+    setValue: function(value, skipValidationMessage, init) {
         var option, model, nullValid;
 
         // enforce the <select> control to contain only a singular falsy
@@ -316,7 +319,7 @@ module.exports = View.extend({
         return this.value;
     },
 
-    validate: function (skipValidationMessage) {
+    validate: function(skipValidationMessage) {
         if (!this.required) {
             // selected option always known to be in option set,
             // thus field is always valid if not required
@@ -340,7 +343,7 @@ module.exports = View.extend({
      * Called by FormView on submit
      * @return {SelectView} this
      */
-    beforeSubmit: function () {
+    beforeSubmit: function() {
         if (this.select) this.setValue(this.select.options[this.select.selectedIndex].value);
     },
 
@@ -390,13 +393,13 @@ module.exports = View.extend({
 
 
 
-    getOptionValue: function (option) {
+    getOptionValue: function(option) {
         if (Array.isArray(option)) return option[0];
         if (this.options.isCollection) return option[this.idAttribute];
         return option;
     },
 
-    getOptionText: function (option) {
+    getOptionText: function(option) {
         if (Array.isArray(option)) return option[1];
         if (this.options.isCollection) {
             if (this.textAttribute && option[this.textAttribute] !== undefined) {
@@ -407,14 +410,14 @@ module.exports = View.extend({
         return option;
     },
 
-    getOptionDisabled: function (option) {
+    getOptionDisabled: function(option) {
         if (Array.isArray(option)) return option[2];
         if (this.options.isCollection && this.disabledAttribute) return option[this.disabledAttribute];
 
         return false;
     },
 
-    toggleMessage: function (hide, message) {
+    toggleMessage: function(hide, message) {
         var mContainer = this.el.querySelector('[data-hook~=message-container]'),
             mText = this.el.querySelector('[data-hook~=message-text]');
 

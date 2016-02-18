@@ -1,9 +1,7 @@
 # ampersand-select-view
-
 Lead Maintainer: [Christopher Dieringer (@cdaringe)](https://github.com/cdaringe)
 
 # overview
-
 A view module for intelligently rendering and validating selectbox input. Works well with ampersand-form-view.
 
 ![](https://travis-ci.org/AmpersandJS/ampersand-select-view.svg) ![](https://badge.fury.io/js/ampersand-select-view.svg)
@@ -13,14 +11,14 @@ A view module for intelligently rendering and validating selectbox input. Works 
 ```
 npm install ampersand-select-view
 ```
+
 <!-- starthide -->
 Part of the [Ampersand.js toolkit](http://ampersandjs.com) for building clientside applications.
 <!-- endhide -->
 
 ## API Reference
-
 ### clear() - [Function] - returns `this`
-Alias to calling `setValue(null, true)`.  Sets the selected option to either the [unselectedText](#general-options) option or a user defined option whose value is `null`.  *Be mindful* that if no unselectedText or `null` option exists, the view will error.
+Alias to calling `setValue(null, true)`.  Sets the selected option to either the [unselectedText](#general-options) option or a user defined option whose value is `null`.  _Be mindful_ that if no unselectedText or `null` option exists, the view will error.
 
 ### reset() - [Function] - returns `this`
 Sets the selected option and view value to the original option value provided during construction.
@@ -34,13 +32,14 @@ Sets the selected option to that which matches the provided value.  Updates the 
 - `name`: the `<select>`'s `name` attribute's value. Used when reporting to parent form
 - `parent`: parent form reference
 - `options`: array/collection of options to render into the select box
-- `[groupOptions]`: use instead of `options` to generate &lt;optgroup&gt; elements within your &lt;select&gt;. If this is set, any values passed in `options` will be ignored and replaced with values coming from `groupOptions`.
+- `[groupOptions]`: use instead of `options` to generate `<optgroup>` elements within your `<select>`. If this is set, any values passed in `options` will be ignored and replaced with values coming from `groupOptions`.
 - `[el]`: element if you want to render the view into
 - `[template]`: a custom template to use (see 'template' section, below, for more)
 - `[required]`: [default: `false`] field required
 - `[eagerValidate]`: [default: `false`] validate and show messages immediately.  Note: field will be validated immediately to provide a true `.valid` value, but messages by default are hidden.
 - `[unselectedText]`: text to display if unselected
 - `[value]`: initial value for the `<select>`.  `value` **must** be a member of the `options` set
+- `[tabindex]`: [default: `0`] Specify the tab index number for your field (integer).
 
 ##### label & validation options
 - `[label]`: [default: `name` value] text to annotate your select control
@@ -50,23 +49,22 @@ Sets the selected option to that which matches the provided value.  Updates the 
 
 ##### collection option set
 If using a collection to produce `<select>` `<option>`s, the following may also be specified:
-
 - `[disabledAttribute]`: boolean model attribute to flag disabling of the option node
 - `[idAttribute]`: model attribute to use as the id for the option node.  This will be returned by `SelectView.prototype.value`
 - `[textAttribute]`: model attribute to use as the text of the option node in the select box
 - `[yieldModel]`: [default: `true`] if options is a collection, yields the full model rather than just its `idAttribute` to `.value`
 
-When the collection changes, the view will try and maintain its currently `.value`.  If the corresponding model is removed, the &lt;select&gt; control will default to the 0th index &lt;option&gt; and update its value accordingly.
+When the collection changes, the view will try and maintain its currently `.value`.  If the corresponding model is removed, the `<select>` control will default to the 0th index `<option>` and update its value accordingly.
 
 ## custom template
 You may override the default template by providing your own template string to the [constructor](#constructor---function-new-selectviewoptions) options hash.  Technically, all you must provided is a `<select>` element.  However, your template may include the following under a single root element:
-
 1. An element with a `data-hook="label"` to annotate your select control
-1. An `<select>` element to hold your `options`
-1. An element with a `data-hook="message-container"` to contain validation messages
-1. An element with a `data-hook="message-text"` nested beneath the `data-hook="message-container"` element to show validation messages
+2. An `<select>` element to hold your `options`
+3. An element with a `data-hook="message-container"` to contain validation messages
+4. An element with a `data-hook="message-text"` nested beneath the `data-hook="message-container"` element to show validation messages
 
 Here's the default template for reference:
+
 ```html
 <label class="select">
     <span data-hook="label"></span>
@@ -98,14 +96,17 @@ module.exports = FormView.extend({
                 // if included this will add option for an unselected state
                 unselectedText: 'please choose one',
                 // you can specify that they have to pick one
-                required: true
+                required: true,
+                // specify tab index for usability
+                tabindex: 1,
             }),
             new SelectView({
                 name: 'option',
                 parent: this,
                 // you can also pass array, first is the value, second is used for the label
                 // and an optional third value can used to disable the option
-                options: [ ['a', 'Option A'], ['b', 'Option B'], ['c', 'Option C', true] ]
+                options: [ ['a', 'Option A'], ['b', 'Option B'], ['c', 'Option C', true] ],
+                tabindex: 2,
             }),
             new SelectView({
                 name: 'option',
@@ -124,6 +125,7 @@ module.exports = FormView.extend({
                     options: [ ['a', 'Option A'], ['b', 'Option B'], ['c', 'Option C', true] ]
                   }
                 ],
+                tabindex: 3,
             }),
             new SelectView({
                 name: 'model',
@@ -141,49 +143,55 @@ module.exports = FormView.extend({
                 disabledAttribute: 'disabled',
                 // here you can specify if it should return the selected model from the
                 // collection, or just the id attribute.  defaults `true`
-                yieldModel: false
+                yieldModel: false,
+                tabindex: 4,
             })
         ];
     }
 });
-
 ```
-## gotchas
 
-* Numeric option values are generally stringified by the browser.  Be mindful doing comparisons.  You'll generally desire to inspect `selectView.value` (the value of your selected options' input) over `selectView.select.value` (the value returned from the browser).
-    * Additionally, do **not** use option sets containing values that `==` one another.  E.g., do not use options whose values are "2" (string) and 2 (number).  Browsers cannot distinguish between them in the select control context, thus nor can ampersand-select-view.
-* `null`, `undefined`, or `''` option values are not considered `valid` when the field is required.  This does not apply when options are from a collection and `yieldModel` is enabled.
-    * The `unselectedText` option will always be preferred in updating the control to an empty-ish value.
+## gotchas
+- Numeric option values are generally stringified by the browser.  Be mindful doing comparisons.  You'll generally desire to inspect `selectView.value` (the value of your selected options' input) over `selectView.select.value` (the value returned from the browser).
+  - Additionally, do **not** use option sets containing values that `==` one another.  E.g., do not use options whose values are "2" (string) and 2 (number).  Browsers cannot distinguish between them in the select control context, thus nor can ampersand-select-view.
+
+- `null`, `undefined`, or `''` option values are not considered `valid` when the field is required.  This does not apply when options are from a collection and `yieldModel` is enabled.
+  - The `unselectedText` option will always be preferred in updating the control to an empty-ish value.
 
 ## browser support
-
 [![testling badge](https://ci.testling.com/AmpersandJS/ampersand-select-view.png)](https://ci.testling.com/AmpersandJS/ampersand-select-view)
 
 ## changelog
+- 6.2.1
+  - Added the `tabindex` option to allow custom tab-ordering of fields for usability
+
 - 6.2.0
-    - Support extending `template`
+  - Support extending `template`
+
 - 6.1.0
-    - Generate <optgroup> elements by passing the new `options.groupOptions` parameter
+  - Generate `<optgroup>` elements by passing the new `options.groupOptions` parameter
+
 - 6.0.0
-    - Match field label rendering behavior to ampersand-input-view.  removes label fallback to `name` attr
-    - Improve x-browser testing CI
+  - Match field label rendering behavior to ampersand-input-view.  removes label fallback to `name` attr
+  - Improve x-browser testing CI
+
 - 5.0.0
-    - Change events now always get triggered on the select element instead of blindly calling on the root element.
+  - Change events now always get triggered on the select element instead of blindly calling on the root element.
+
 - 4.0.0
-    - Extend [ampersand-view](https://github.com/ampersandjs/ampersand-view) and support `autoRender`, where previously this view would autoRender unconditionally
+  - Extend [ampersand-view](https://github.com/ampersandjs/ampersand-view) and support `autoRender`, where previously this view would autoRender unconditionally
+
 - 3.0.0
-    - Improve general option edge cases, and add supporting test cases.  Primarily targets falsy option value handling.
-    - Validate immediately to assist when parent FormView tests onload for field validity.  Update `skipValidation` to `skipValidationMessage`, permit immediate validation, but conditionally display messages.
-    - Throw an `Error` when trying to `setValue(value)` and an option *matching the requested `value`* does not exist.  The exception to this is when the provided value is `null`, `undefined`, or `''`, and a `null` option value exists.  Because the DOM can only recognize a single empty value for any <option>, which is the empty string `''`, only a single empty-ish option can only be supported by the view.
-    - Support `0` value options, both in Model id's and array values.
-    - Add `eagerValidate`.
-    - Denote a plan for 4.x release
-    - Bulk update README, and some cody tidying
+  - Improve general option edge cases, and add supporting test cases.  Primarily targets falsy option value handling.
+  - Validate immediately to assist when parent FormView tests onload for field validity.  Update `skipValidation` to `skipValidationMessage`, permit immediate validation, but conditionally display messages.
+  - Throw an `Error` when trying to `setValue(value)` and an option _matching the requested `value`_ does not exist.  The exception to this is when the provided value is `null`, `undefined`, or `''`, and a `null` option value exists.  Because the DOM can only recognize a single empty value for any `<option>`, which is the empty string `''`, only a single empty-ish option can only be supported by the view.
+  - Support `0` value options, both in Model id's and array values.
+  - Add `eagerValidate`.
+  - Denote a plan for 4.x release
+  - Bulk update README, and some cody tidying
 
 ## credits
-
 Originally designed & written by [@philip_roberts](twitter.com/philip_roberts).
 
 ## license
-
 MIT

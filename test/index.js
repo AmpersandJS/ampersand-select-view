@@ -1142,4 +1142,24 @@ suite('With ampersand collection', function (s) {
         view.remove();
     }));
 
+    s.test('set default tabindex on select input', sync(function (t) {
+        view = new SelectView({
+            name: 'word',
+            options: [],
+            autoRender: true
+        });
+        var selectTabIndex = view.el.querySelector('select').getAttribute('tabindex');
+        t.equal(selectTabIndex, '0');
+    }));
+
+    s.test('set valid tabindex on select input', sync(function (t) {
+        view = new SelectView({
+            name: 'word',
+            options: [],
+            autoRender: true,
+            tabindex: 3
+        });
+        var selectTabIndex = view.el.querySelector('select').getAttribute('tabindex');
+        t.equal(selectTabIndex, '3');
+    }));
 });

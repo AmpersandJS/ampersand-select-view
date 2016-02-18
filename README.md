@@ -32,7 +32,7 @@ Sets the selected option to that which matches the provided value.  Updates the 
 - `name`: the `<select>`'s `name` attribute's value. Used when reporting to parent form
 - `parent`: parent form reference
 - `options`: array/collection of options to render into the select box
-- `[groupOptions]`: use instead of `options` to generate <optgroup> elements within your <select>. If this is set, any values passed in `options` will be ignored and replaced with values coming from `groupOptions`.
+- `[groupOptions]`: use instead of `options` to generate `<optgroup>` elements within your `<select>`. If this is set, any values passed in `options` will be ignored and replaced with values coming from `groupOptions`.
 - `[el]`: element if you want to render the view into
 - `[template]`: a custom template to use (see 'template' section, below, for more)
 - `[required]`: [default: `false`] field required
@@ -54,7 +54,7 @@ If using a collection to produce `<select>` `<option>`s, the following may also 
 - `[textAttribute]`: model attribute to use as the text of the option node in the select box
 - `[yieldModel]`: [default: `true`] if options is a collection, yields the full model rather than just its `idAttribute` to `.value`
 
-When the collection changes, the view will try and maintain its currently `.value`.  If the corresponding model is removed, the <select> control will default to the 0th index <option> and update its value accordingly.
+When the collection changes, the view will try and maintain its currently `.value`.  If the corresponding model is removed, the `<select>` control will default to the 0th index `<option>` and update its value accordingly.
 
 ## custom template
 You may override the default template by providing your own template string to the [constructor](#constructor---function-new-selectviewoptions) options hash.  Technically, all you must provided is a `<select>` element.  However, your template may include the following under a single root element:
@@ -169,7 +169,7 @@ module.exports = FormView.extend({
   - Support extending `template`
 
 - 6.1.0
-  - Generate <optgroup> elements by passing the new `options.groupOptions` parameter
+  - Generate `<optgroup>` elements by passing the new `options.groupOptions` parameter
 
 - 6.0.0
   - Match field label rendering behavior to ampersand-input-view.  removes label fallback to `name` attr
@@ -184,7 +184,7 @@ module.exports = FormView.extend({
 - 3.0.0
   - Improve general option edge cases, and add supporting test cases.  Primarily targets falsy option value handling.
   - Validate immediately to assist when parent FormView tests onload for field validity.  Update `skipValidation` to `skipValidationMessage`, permit immediate validation, but conditionally display messages.
-  - Throw an `Error` when trying to `setValue(value)` and an option _matching the requested `value`_ does not exist.  The exception to this is when the provided value is `null`, `undefined`, or `''`, and a `null` option value exists.  Because the DOM can only recognize a single empty value for any <option>, which is the empty string `''`, only a single empty-ish option can only be supported by the view.
+  - Throw an `Error` when trying to `setValue(value)` and an option _matching the requested `value`_ does not exist.  The exception to this is when the provided value is `null`, `undefined`, or `''`, and a `null` option value exists.  Because the DOM can only recognize a single empty value for any `<option>`, which is the empty string `''`, only a single empty-ish option can only be supported by the view.
   - Support `0` value options, both in Model id's and array values.
   - Add `eagerValidate`.
   - Denote a plan for 4.x release

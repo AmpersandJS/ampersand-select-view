@@ -162,6 +162,8 @@ module.exports = FormView.extend({
 [![testling badge](https://ci.testling.com/AmpersandJS/ampersand-select-view.png)](https://ci.testling.com/AmpersandJS/ampersand-select-view)
 
 ## changelog
+- 7.0.0
+  - Upgrade to &-view 9.x
 - 6.2.1
   - Added the `tabindex` option to allow custom tab-ordering of fields for usability
 
